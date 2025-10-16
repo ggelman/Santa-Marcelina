@@ -1,5 +1,4 @@
-# 🏗️ PROJETO FIAP FASE 6 - SISTEMA INTEGRADO LGPD
-## Sistema goDigital Code - Padaria Santa Marcelina
+# 🏗️ Sistema goDigital Code - Padaria Santa Marcelina
 
 **📅 Atualizado:** 10 de Outubro de 2025  
 **🎯 Status:** 85% Concluído - Sistema Operacional  
@@ -338,7 +337,6 @@ system_status.bat
 ## 🔄 **BACKUP E RESTAURAÇÃO**
 
 ### **Sistema Geral:**
-- Backups automáticos em `.sonar_selective_backups/`
 - Logs em cada módulo
 - Dados de fallback em `fallback_data/`
 
@@ -351,4 +349,5 @@ system_status.bat
 ---
 
 **Última atualização**: Outubro 2025  
+
 **Versão**: 1.0 - Sistema Integrado Otimizado
