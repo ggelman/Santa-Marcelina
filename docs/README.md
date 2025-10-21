@@ -27,4 +27,4 @@ Este diretório reúne os materiais oficiais do projeto, agrupados por objetivo.
 - Links relativos consideram a raiz da pasta `docs/`.
 - Sugestões e atualizações devem ser registradas via pull request e anotadas neste índice.
 
-> Última atualização: outubro/2025
+> Última atualização: novembro/2025

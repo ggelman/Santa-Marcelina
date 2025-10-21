@@ -2,7 +2,7 @@
 
 Plataforma integrada de conformidade LGPD e operação digital. O monorepo agrega frontend React, backend Spring Boot e módulo de IA em Flask para entregar monitoramento de auditoria, portal de direitos do titular e previsões de demanda.
 
-> **Status atual:** 85% concluído • **Última atualização:** outubro/2025
+> **Status atual:** 85% concluído • **Última atualização:** novembro/2025
 
 ---
 

@@ -157,4 +157,93 @@ contract LGPDAuditRegistry {
 3. Validar orçamento e parceiros para implementação blockchain permissionada.
 4. Preparar evidências para apresentação executiva e de mercado.
 
-> Atualizado em: outubro/2025 — Responsável: Equipe goDigital Code
+---
+
+## 8. Revolução do Módulo de IA (Gemini + OpenAI)
+
+### 8.1 Orquestração avançada de LLMs
+| Iniciativa | Descrição | Dependências |
+| --- | --- | --- |
+| **Router multi-provedor** | Implementar camada que roteia prompts entre Gemini (modelos gemini-1.5) e OpenAI (GPT-4.1/4o) com base em tipo de tarefa, custo e SLA. | Ajustar `ai_module/ai_service.py` e `chat_service.py` para usar um `LLMOrchestrator` central, métricas em `monitoring_system.py`. |
+| **Enriquecimento contextual** | Usar Gemini para sumarizar dados multivariados (vendas, estoque, clima) e gerar contexto estruturado antes da chamada ao modelo da OpenAI responsável por decisões. | Conectar `get_business_context()` a novos pipelines de features com `pandas`/`statsmodels`. |
+| **Resposta multimodal** | Habilitar Gemini para gerar descrições visuais e rascunhos de dashboards que o frontend pode renderizar (por exemplo, JSON de cards e gráficos). | Extender API `/api/ai/generate-insight` para aceitar `response_format`. |
+
+### 8.2 Pipeline analítico + MLOps
+- **Pipelines versionados**: usar `mlflow` ou `dvc` para rastrear datasets e experimentos (MAE, MAPE, R²), com deploy automatizado via GitHub Actions.
+- **Avaliação contínua**: combinar regressão linear (statsmodels) e Prophet, registrando métricas por produto no Redis + banco histórico.
+- **Feature Store light**: expor serviço que guarda regressores exógenos (clima, campanhas) e permite Gemini/GPT gerar hipóteses.
+
+### 8.3 Segurança e governança de LLMs
+- **Vault de prompts**: criptografar chaves e prompts sensíveis, armazenando no backend (`/api/vault/llm`).
+- **Auditoria LGPD**: logar prompts/respostas com hash (SHA-256) e registrar eventos críticos no smart contract `LGPDAuditRegistry`.
+- **Políticas de consentimento**: permitir que titulares optem por uso dos dados em modelos generativos (toggle no portal LGPD).
+
+### 8.4 Entregas priorizadas
+| Horizonte | Entrega | Responsáveis |
+| --- | --- | --- |
+| 0-1 mês | Atualizar SDK OpenAI (`openai>=1.0`) com wrapper compatível; habilitar fallback Gemini→OpenAI. | Equipe IA + DevSecOps |
+| 1-2 meses | Implementar orquestrador e dashboards de comparação (tempo de resposta, custo por chamada). | Equipe IA |
+| 2-3 meses | Liberar insights multimodais consumidos pelo frontend e registrar auditoria na blockchain. | Equipe IA + Front |
+
+---
+
+## 9. Melhorias no FrontGoDgital
+
+| Área | Dor identificada | Ação proposta | Impacto |
+| --- | --- | --- | --- |
+| Consumo de APIs | Páginas como `CardapioDigital` usam `fetch` com `http://localhost:8080`, gerando risco de mixed content em HTTPS. | Centralizar chamadas no `api.js` e usar `process.env.REACT_APP_API_URL` com fallback seguro. | Evita falhas em produção HTTPS e simplifica observabilidade. |
+| Observabilidade UX | Falta telemetria para mapear abandono em fluxos LGPD/consentimento. | Integrar `web-vitals` + `OpenTelemetry` e expor eventos para Gemini sugerir otimizações. | Permite decisões data-driven sobre UI. |
+| Modularização | Componentes longos (`PortalDireitosLGPD`, `DashboardAuditoria`) dificultam testes. | Extrair hooks (`useLGPDRequests`, `useDashboardMetrics`) e componentes atômicos com Storybook. | Aumenta reuso, cobertura de testes e facilita experimentos de IA. |
+| IA no front | Chat atual consome apenas texto. | Adicionar widget alimentado por Gemini para resumos rápidos e ações sugeridas (cards). | Melhora adoção de IA pelos usuários finais. |
+
+---
+
+## 10. Melhorias no Backend (Spring Boot)
+
+| Área | Gap | Ação proposta | Impacto |
+| --- | --- | --- | --- |
+| Integração LLM | `chat_service` e backend ainda não compartilham camadas de autorização/contexto. | Criar microserviço `llm-gateway` com autenticação mútua (mTLS) e fila de prompts (Kafka/RabbitMQ). | Reduz acoplamento e facilita auditoria LGPD. |
+| Observabilidade | Falta tracing distribuído em `RestTemplate` e `WebClient`. | Instrumentar com OpenTelemetry + Grafana Tempo/Jaeger. | Diagnóstico rápido de gargalos IA↔backend. |
+| Segurança | MFA ainda não implementado; tokens refresh sem rotação. | Adicionar suporte WebAuthn/Authenticator Apps e tabelas de rotação de refresh token. | Hardening LGPD e redução de riscos. |
+| Dados públicos | Endpoints `/public/cardapio` expõem dados sem cache nem ETags. | Adicionar `@Cacheable` + `Cache-Control`/ETag, e gateway CDN-ready. | Melhor desempenho e economia de custos. |
+
+---
+
+## 11. Iniciativas de Plataforma
+- **Infra-as-Code**: Provisionar infraestrutura (Redis, MySQL, blockchain permissionada) via Terraform + Ansible.
+- **CI/CD unificado**: Pipeline que roda `pytest`, `mvn verify`, `npm test`, scans SAST/DAST e publica métricas.
+- **Gestão de segredos**: Centralizar em HashiCorp Vault/AWS Secrets Manager com rotação automática para chaves OpenAI/Gemini.
+- **Programa de conformidade**: Preparar evidências ISO 27001/SOC 2 com política de auditoria blockchain.
+
+---
+
+## 12. Diagnóstico funcional e possíveis bugs
+
+| Módulo | Status de verificação | Achados | Ações recomendadas |
+| --- | --- | --- | --- |
+| `ai_module` | Revisão manual do serviço Flask e endpoints críticos (`/predict`, `/retrain`). | Código de retreinamento tinha bloco inacessível (indentação), impedindo `POST /api/ai/retrain`; ajustado no commit atual. Compatibilidade do `openai.ChatCompletion` com SDK >=1.0 continua pendente. | Criar teste de integração cobrindo retreinamento, atualizar SDK para nova interface (`OpenAI` client) e validar fallback Gemini. |
+| `padariaApi` | Revisão de segurança e controllers. | Falta telemetria e auditoria detalhada de chamadas para IA; endpoints públicos sem caching. | Cobrir com testes `mvn test`, habilitar logs estruturados e aplicar cache/ETag nos endpoints públicos. |
+| `FrontGoDgital` | Inspeção dos serviços e páginas principais. | Mixed content: `CardapioDigital` chama `http://localhost:8080` via `fetch`, quebrando quando servido em HTTPS; interceptors não tratam expiração simultânea de access/refresh token. | Migrar para `api.js`, usar HTTPS/variáveis ambiente e adicionar retry inteligente no interceptor. |
+| Plataforma | Scripts `start_system.bat`/`system_status.bat` revisados. | Não há automação Linux/macOS; monitoramento distribuído depende de execução manual. | Adicionar scripts cross-platform (Makefile, docker-compose) e health-checks automatizados no CI. |
+
+Checklist sugerido para homologação dos módulos:
+1. `pytest -q` em `ai_module` após atualizar modelos.
+2. `mvn clean verify` em `padariaApi` com banco em memória.
+3. `npm run lint && npm test` no frontend usando `.env` com URL HTTPS.
+4. Execução integrada via `docker-compose` validando chamadas LLM (Gemini/OpenAI) com chaves de sandbox.
+
+---
+
+## 13. Backlog paralelizável
+
+| Tarefa | Time responsável | Dependências | Entrega |
+| --- | --- | --- | --- |
+| Atualizar SDKs LLM e implementar orquestrador | IA + DevSecOps | Disponibilidade de chaves Gemini/OpenAI de sandbox | Sprint atual |
+| Refatorar consumo de APIs no frontend (`CardapioDigital`, widgets LGPD) | Front-end | Definição de `REACT_APP_API_URL` e contratos REST estáveis | Sprint atual |
+| Instrumentar observabilidade (OpenTelemetry) no backend | Backend | Stack de observabilidade provisionada (Grafana/Tempo) | +1 sprint |
+| Planejar PoC blockchain (deploy smart contract) | Plataforma | Ambiente Quorum/Besu provisionado | +1 sprint |
+| Implementar pipeline estatístico (correlação/regressão) | Data/Analytics | Dados históricos limpos e definidos | +1 sprint |
+
+---
+
+> Atualizado em: novembro/2025 — Responsável: Equipe goDigital Code
