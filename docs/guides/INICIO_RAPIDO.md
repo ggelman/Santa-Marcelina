@@ -65,6 +65,17 @@ Use `system_status.bat` (Windows) ou `ps`/`lsof -i` (Linux/macOS) para confirmar
 
 ---
 
+## ✅ Validação expressa pós-start
+```bash
+pytest -q                      # Testes rápidos do módulo de IA
+mvn clean verify               # Backend com build + testes
+npm run lint && npm test       # Qualidade e testes do frontend
+```
+
+> Para execução integrada (IA + backend + frontend) utilize `docker compose up -d` com chaves LLM de sandbox configuradas.
+
+---
+
 ## 🛠️ Problemas frequentes
 | Sintoma | Ação recomendada |
 | --- | --- |
@@ -80,3 +91,5 @@ Use `system_status.bat` (Windows) ou `ps`/`lsof -i` (Linux/macOS) para confirmar
 - Acompanhe o estado do projeto e o plano evolutivo no [roadmap estratégico](../ROADMAP_TRANSFORMACAO_DIGITAL.md).
 
 > Tempo médio para o primeiro acesso: **≈ 5 minutos**
+>
+> Última atualização: dezembro/2025

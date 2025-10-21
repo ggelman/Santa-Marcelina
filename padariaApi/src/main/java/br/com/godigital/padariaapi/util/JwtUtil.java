@@ -83,8 +83,13 @@ public class JwtUtil {
 
     // Refresh Token Methods
     public String generateRefreshToken(UserDetails userDetails) {
+        return generateRefreshToken(userDetails, java.util.UUID.randomUUID().toString());
+    }
+
+    public String generateRefreshToken(UserDetails userDetails, String tokenId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("tokenType", "refresh");
+        claims.put("jti", tokenId);
         return createRefreshToken(claims, userDetails.getUsername());
     }
 
@@ -133,8 +138,8 @@ public class JwtUtil {
         final String username = extractUsernameFromRefreshToken(refreshToken);
         final Claims claims = extractAllRefreshClaims(refreshToken);
         final String tokenType = (String) claims.get("tokenType");
-        
-        return (username.equals(userDetails.getUsername()) 
+
+        return (username.equals(userDetails.getUsername())
                 && !isRefreshTokenExpired(refreshToken)
                 && "refresh".equals(tokenType));
     }
@@ -146,5 +151,14 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public String extractTokenIdFromRefreshToken(String refreshToken) {
+        final Claims claims = extractAllRefreshClaims(refreshToken);
+        Object tokenId = claims.get("jti");
+        if (tokenId == null) {
+            throw new IllegalArgumentException("Refresh token sem identificador único");
+        }
+        return tokenId.toString();
     }
 }

@@ -2,7 +2,7 @@
 
 Plataforma integrada de conformidade LGPD e operação digital. O monorepo agrega frontend React, backend Spring Boot e módulo de IA em Flask para entregar monitoramento de auditoria, portal de direitos do titular e previsões de demanda.
 
-> **Status atual:** 85% concluído • **Última atualização:** novembro/2025
+> **Status atual:** Frontend 85% • Backend 85% • Módulo de IA 80% • Infra/DevSecOps 70% • **Última atualização:** dezembro/2025
 
 ---
 
@@ -67,6 +67,44 @@ Frontend (React) ⇄ Backend (Spring Boot) ⇄ IA/ML Service (Flask)
 - Segurança: [`docs/security/`](docs/security)
 - Referência técnica: [`docs/technical/DOCUMENTACAO_TECNICA_COMPLETA.md`](docs/technical/DOCUMENTACAO_TECNICA_COMPLETA.md)
 - Planejamento estratégico: [`docs/ROADMAP_TRANSFORMACAO_DIGITAL.md`](docs/ROADMAP_TRANSFORMACAO_DIGITAL.md)
+
+---
+
+## 📊 Visão consolidada
+
+| Domínio | Status | Ajustes priorizados |
+| --- | --- | --- |
+| Frontend (React) | 85% operacional | Modularização de telas extensas, hooks compartilhados, widget Gemini e centralização das requisições no `api.js` com variáveis seguras. |
+| Backend (Spring Boot) | 85% operacional | Microserviço `llm-gateway` com mTLS, fila de prompts, MFA/WebAuthn, rotação de refresh tokens e cache/ETag para rotas públicas. |
+| Módulo de IA (Flask + LLMs) | 80% operacional | Router multi-provedor (Gemini + OpenAI), contexto multivariado, respostas multimodais e versionamento de pipelines com MLflow/DVC. |
+| Infra & DevSecOps | 70% parcial | Infra-as-Code, CI/CD unificado com scans, cofre de segredos e trilha blockchain para auditoria LGPD. |
+
+## 🎯 Prioridades imediatas
+- Iniciar a execução do [plano de ação da Fase 7](docs/roadmap/FASE7_PLANO_ACAO.md), cobrindo MFA administrativo, SIEM integrado e pipeline estatístico.
+- Homologar documentação revisada (roadmap, guias, status consolidado).
+- Validar orçamento e parceiros para blockchain permissionada.
+- Preparar o pacote de evidências executivas e de mercado.
+
+## 🩺 Diagnóstico funcional & mitigação
+- **IA:** SDK OpenAI desatualizado e fallback Gemini sem testes integrados → atualizar SDKs, cobrir com testes de integração e registrar métricas comparativas.
+- **Backend:** falta telemetria detalhada e caching em endpoints públicos → instrumentar tracing distribuído, aplicar cache/ETag e revisar logs.
+- **Frontend:** risco de mixed content e interceptors sem tratamento para expiração simultânea de tokens → padronizar interceptors, reforçar políticas HTTPS e tratativas de sessão.
+- **Plataforma:** scripts dependem de Windows e monitoramento distribuído manual → padronizar automações multi-OS e incorporar observabilidade em pipelines.
+
+## 🧪 Checklist de validação rápida
+```bash
+pytest -q                      # Módulo de IA
+mvn clean verify               # Backend
+npm run lint && npm test       # Frontend
+docker compose up -d          # Execução integrada com chaves LLM de sandbox
+```
+
+## 🔄 Trabalho paralelizável
+- Atualização de SDKs LLM e implementação do orquestrador (times de IA + DevSecOps).
+- Refatoração do consumo de APIs e modularização do frontend.
+- Instrumentação de observabilidade distribuída no backend.
+- Planejamento da PoC de blockchain permissionada e conformidade.
+- Construção do pipeline estatístico (correlação/regressão) para analytics.
 
 ---
 

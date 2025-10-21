@@ -1,7 +1,10 @@
 package br.com.godigital.padariaapi.controller;
 
+import br.com.godigital.padariaapi.config.CacheConfig;
 import br.com.godigital.padariaapi.model.Produto;
 import br.com.godigital.padariaapi.repository.ProdutoRepository;
+import io.micrometer.observation.annotation.Observed;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,6 +31,10 @@ public class CardapioPublicoController {
     }
 
     @GetMapping
+    @Observed(name = "public.cardapio.listar", contextualName = "listar-cardapio")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_CARDAPIO_CACHE,
+            key = "'cardapio:listar'",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> listarProdutosCardapio() {
         try {
             List<Produto> produtos = produtoRepository.findAll();
@@ -44,6 +51,10 @@ public class CardapioPublicoController {
     }
 
     @GetMapping("/produtos")
+    @Observed(name = "public.cardapio.listar.paginado", contextualName = "listar-cardapio-paginado")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_CARDAPIO_CACHE,
+            key = "'cardapio:paginado:' + #page + ':' + #size + ':' + (#categoria != null ? #categoria : 'all') + ':' + (#busca != null ? #busca : 'all')",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> listarProdutos(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -84,6 +95,10 @@ public class CardapioPublicoController {
     }
 
     @GetMapping("/categorias")
+    @Observed(name = "public.cardapio.categorias", contextualName = "listar-categorias")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_CARDAPIO_CACHE,
+            key = "'cardapio:categorias'",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> listarCategorias() {
         try {
             List<String> categorias = produtoRepository.findDistinctCategorias();
@@ -102,6 +117,10 @@ public class CardapioPublicoController {
     }
 
     @GetMapping("/categoria/{categoria}")
+    @Observed(name = "public.cardapio.categoria", contextualName = "listar-categoria")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_CARDAPIO_CACHE,
+            key = "'cardapio:categoria:' + #categoria",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> listarProdutosPorCategoria(@PathVariable String categoria) {
         try {
             List<Produto> produtos = produtoRepository.findByCategoriaOrderByNome(categoria);
@@ -122,6 +141,10 @@ public class CardapioPublicoController {
     }
 
     @GetMapping("/destaque")
+    @Observed(name = "public.cardapio.destaque", contextualName = "listar-destaques")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_CARDAPIO_CACHE,
+            key = "'cardapio:destaques:' + #limite",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> listarProdutosDestaque(@RequestParam(defaultValue = "6") int limite) {
         try {
             PageRequest pageRequest = PageRequest.of(0, limite, Sort.by("nome"));
@@ -142,6 +165,10 @@ public class CardapioPublicoController {
     }
 
     @GetMapping("/{id}")
+    @Observed(name = "public.cardapio.obter", contextualName = "obter-produto")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_CARDAPIO_CACHE,
+            key = "'cardapio:produto:' + #id",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> obterProduto(@PathVariable Long id) {
         try {
             Produto produto = produtoRepository.findById(id)
@@ -161,6 +188,10 @@ public class CardapioPublicoController {
     }
 
     @GetMapping("/buscar")
+    @Observed(name = "public.cardapio.buscar", contextualName = "buscar-produtos")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_CARDAPIO_CACHE,
+            key = "'cardapio:buscar:' + #termo + ':' + #page + ':' + #size",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> buscarProdutos(
             @RequestParam String termo,
             @RequestParam(defaultValue = "0") int page,

@@ -19,6 +19,11 @@ Este diretório reúne os materiais oficiais do projeto, agrupados por objetivo.
 
 ## 🗺️ Planejamento Estratégico
 - **[ROADMAP_TRANSFORMACAO_DIGITAL.md](ROADMAP_TRANSFORMACAO_DIGITAL.md)** — status consolidado do projeto, backlog estratégico, diretrizes de segurança, plano estatístico e iniciativas de blockchain/Smart Contracts.
+- **[roadmap/FASE7_PLANO_ACAO.md](roadmap/FASE7_PLANO_ACAO.md)** — plano detalhado de execução da Fase 7 (hardening, observabilidade e estatística aplicada) com sprints, responsáveis e critérios de conclusão.
+
+## 📈 Status & Prioridades
+- Visão consolidada por domínio, prioridades imediatas e checklist de validação: consulte o [README principal](../README.md).
+- Detalhamento operacional (IA, frontend, backend, plataforma) e trabalho paralelizável: seção 1 do [roadmap estratégico](ROADMAP_TRANSFORMACAO_DIGITAL.md).
 
 ---
 
@@ -27,4 +32,4 @@ Este diretório reúne os materiais oficiais do projeto, agrupados por objetivo.
 - Links relativos consideram a raiz da pasta `docs/`.
 - Sugestões e atualizações devem ser registradas via pull request e anotadas neste índice.
 
-> Última atualização: novembro/2025
+> Última atualização: dezembro/2025

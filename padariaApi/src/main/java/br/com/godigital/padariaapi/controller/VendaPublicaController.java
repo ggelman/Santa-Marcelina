@@ -1,10 +1,14 @@
 package br.com.godigital.padariaapi.controller;
 
-import br.com.godigital.padariaapi.model.VendaCliente;
+import br.com.godigital.padariaapi.config.CacheConfig;
 import br.com.godigital.padariaapi.model.LogAuditoria;
+import br.com.godigital.padariaapi.model.VendaCliente;
+import br.com.godigital.padariaapi.repository.LogAuditoriaRepository;
 import br.com.godigital.padariaapi.service.VendaClienteService;
 import br.com.godigital.padariaapi.service.VendaClienteService.ItemPedidoDTO;
-import br.com.godigital.padariaapi.repository.LogAuditoriaRepository;
+import io.micrometer.observation.annotation.Observed;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +37,9 @@ public class VendaPublicaController {
     }
 
     @PostMapping("/processar-pedido")
-    public ResponseEntity<Map<String, Object>> processarPedido(@RequestBody PedidoPublicoDTO pedidoDTO, 
+    @Observed(name = "public.vendas.processar", contextualName = "processar-pedido-publico")
+    @CacheEvict(cacheNames = CacheConfig.PUBLIC_STATUS_CACHE, allEntries = true)
+    public ResponseEntity<Map<String, Object>> processarPedido(@RequestBody PedidoPublicoDTO pedidoDTO,
                                            HttpServletRequest request) {
         try {
             // Log de auditoria para processamento de pedido
@@ -75,6 +81,8 @@ public class VendaPublicaController {
     }
 
     @PostMapping("/confirmar-pagamento")
+    @Observed(name = "public.vendas.confirmar", contextualName = "confirmar-pagamento-publico")
+    @CacheEvict(cacheNames = CacheConfig.PUBLIC_STATUS_CACHE, allEntries = true)
     public ResponseEntity<Map<String, Object>> confirmarPagamento(@RequestBody ConfirmacaoPagamentoDTO confirmacaoDTO,
                                                HttpServletRequest request) {
         try {
@@ -106,6 +114,10 @@ public class VendaPublicaController {
     }
 
     @GetMapping("/status/{vendaId}")
+    @Observed(name = "public.vendas.status", contextualName = "consultar-status-pedido")
+    @Cacheable(cacheNames = CacheConfig.PUBLIC_STATUS_CACHE,
+            key = "'status:' + #clienteId + ':' + #vendaId",
+            unless = "#result == null || !#result.getStatusCode().is2xxSuccessful()")
     public ResponseEntity<Map<String, Object>> consultarStatusPedido(@PathVariable Long vendaId,
                                                   @RequestParam Long clienteId,
                                                   HttpServletRequest request) {
