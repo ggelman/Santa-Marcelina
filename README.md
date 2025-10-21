@@ -80,10 +80,10 @@ Frontend (React) ⇄ Backend (Spring Boot) ⇄ IA/ML Service (Flask)
 | Infra & DevSecOps | 70% parcial | Infra-as-Code, CI/CD unificado com scans, cofre de segredos e trilha blockchain para auditoria LGPD. |
 
 ## 🎯 Prioridades imediatas
+- Iniciar a execução do [plano de ação da Fase 7](docs/roadmap/FASE7_PLANO_ACAO.md), cobrindo MFA administrativo, SIEM integrado e pipeline estatístico.
 - Homologar documentação revisada (roadmap, guias, status consolidado).
-- Priorização do backlog da Fase 7: MFA administrativo, SIEM integrado e pipelines estatísticos/científicos de dados.
-- Validação de orçamento e parceiros para blockchain permissionada.
-- Preparação do pacote de evidências executivas e de mercado.
+- Validar orçamento e parceiros para blockchain permissionada.
+- Preparar o pacote de evidências executivas e de mercado.
 
 ## 🩺 Diagnóstico funcional & mitigação
 - **IA:** SDK OpenAI desatualizado e fallback Gemini sem testes integrados → atualizar SDKs, cobrir com testes de integração e registrar métricas comparativas.

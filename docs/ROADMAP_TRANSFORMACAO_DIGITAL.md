@@ -198,6 +198,13 @@ contract LGPDAuditRegistry {
 
 ---
 
+### 6.1 Plano de ação detalhado da Fase 7
+- O plano operacional com sprints, responsáveis, dependências e critérios de conclusão está descrito em [`roadmap/FASE7_PLANO_ACAO.md`](roadmap/FASE7_PLANO_ACAO.md).
+- Atualize quinzenalmente os indicadores de MFA, SIEM e pipelines estatísticos para refletir a execução real e reportar no comitê de governança.
+- Vincule as evidências geradas (diagramas, relatórios de testes, hashes blockchain) ao pacote executivo definido no plano para homologação da fase.
+
+---
+
 ## 7. Indicadores de Sucesso
 - ≥ 95% de solicitações LGPD respondidas dentro do SLA.
 - Redução de 20% no desperdício de insumos via previsões integradas.
