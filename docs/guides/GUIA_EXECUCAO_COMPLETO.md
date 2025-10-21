@@ -111,9 +111,19 @@ curl http://localhost:3000 --head
 
 ---
 
-## 7. Referências
+## 7. Checklist integrado de validação
+```bash
+pytest -q                      # Testes rápidos do módulo de IA
+mvn clean verify               # Backend com build + testes
+npm run lint && npm test       # Qualidade e testes do frontend
+docker compose up -d          # Execução integrada com chaves LLM de sandbox
+```
+
+> Execute os comandos após alterações relevantes ou antes de homologações.
+
+## 8. Referências
 - [Início rápido](INICIO_RAPIDO.md)
 - [Documentação técnica consolidada](../technical/DOCUMENTACAO_TECNICA_COMPLETA.md)
 - [Roadmap estratégico e próximos passos](../ROADMAP_TRANSFORMACAO_DIGITAL.md)
 
-> Última revisão: outubro/2025
+> Última revisão: dezembro/2025

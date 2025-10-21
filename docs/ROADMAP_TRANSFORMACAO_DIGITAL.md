@@ -10,10 +10,66 @@ Com a maturidade em LGPD e Governança de TI atingida, o foco agora é posiciona
 
 | Módulo | Situação | Destaques atuais | Próximos ajustes |
 | --- | --- | --- | --- |
-| FrontGoDgital (React) | 85% — operacional | Dashboard de auditoria, Portal de Direitos, módulos administrativos. | Modularizar componentes reutilizáveis e ampliar testes automatizados. |
-| padariaApi (Spring Boot) | 85% — operacional | APIs LGPD, autenticação JWT, integração IA. | Implementar auditoria blockchain-ready e camadas anti-fraude. |
-| ai_module (Flask/ML) | 80% — operacional | Previsões de demanda, monitoramento estruturado, cache Redis. | Treinar modelos com pipelines de MLOps e métricas comparativas (MAE/MAPE). |
-| Infraestrutura & DevSecOps | 70% — parcial | Certificados SSL, scripts de orquestração, logging básico. | Automatizar CI/CD, backup versionado e centralizar observabilidade. |
+| FrontGoDgital (React) | 85% — operacional | Dashboard de auditoria, Portal de Direitos, módulos administrativos. | Modularizar páginas extensas via hooks/componentes, centralizar requisições no `api.js` com variáveis seguras e habilitar telemetria (Web Vitals + OpenTelemetry). |
+| padariaApi (Spring Boot) | 85% — operacional | APIs LGPD, autenticação JWT, integração IA. | Criar microserviço `llm-gateway` com mTLS e fila de prompts, ativar MFA/WebAuthn e rotação de refresh tokens, além de cache/ETag em endpoints públicos. |
+| ai_module (Flask/ML) | 80% — operacional | Previsões de demanda, monitoramento estruturado, cache Redis. | Atualizar SDKs (OpenAI/Gemini), construir orquestrador multi-provedor, enriquecer contexto com dados multivariados e versionar pipelines com MLflow/DVC. |
+| Infraestrutura & DevSecOps | 70% — parcial | Certificados SSL, scripts de orquestração, logging básico. | Adotar IaC (Terraform/Ansible), unificar CI/CD com testes + scans, centralizar segredos (Vault/Secrets Manager) e amarrar auditoria blockchain à conformidade. |
+
+---
+
+### 1.1 Prioridades imediatas
+- Homologar documentação revisada (roadmap, guias, status consolidado).
+- Priorizar backlog técnico da Fase 7: MFA administrativo, SIEM integrado e pipelines estatísticos/científicos de dados.
+- Validar orçamento e parceiros para blockchain permissionada.
+- Preparar pacote de evidências executivas e de mercado.
+
+### 1.2 Plano operacional por domínio
+
+#### Módulo de IA (Gemini + OpenAI)
+- **Objetivos:** router multi-provedor, contexto multivariado, respostas multimodais, pipelines versionados e governança reforçada (vault de prompts, auditoria LGPD via blockchain).
+- **Entregas priorizadas:**
+  - **0-1 mês:** atualizar SDKs OpenAI/Gemini e revisar testes de integração/fallback.
+  - **1-2 meses:** implementar orquestrador multi-provedor com balanceamento e métricas comparativas.
+  - **2-3 meses:** publicar insights multimodais com registro na trilha blockchain.
+
+#### Frontend (React)
+- Centralizar requisições no `src/services/api.js`, parametrizando endpoints via variáveis seguras.
+- Instrumentar telemetria (Web Vitals + OpenTelemetry) e modularizar páginas extensas por meio de hooks/componentes reutilizáveis.
+- Integrar widget Gemini para insights rápidos e evitar mixed content com políticas HTTPS consistentes.
+
+#### Backend (Spring Boot)
+- Criar microserviço `llm-gateway` com mTLS, fila de prompts e observabilidade distribuída.
+- Entregar MFA/WebAuthn, rotação de refresh tokens e aplicar cache/ETag em endpoints públicos.
+- Ampliar tracing com OpenTelemetry e preparar auditoria blockchain-ready.
+
+#### Plataforma (Infra/DevSecOps)
+- Adotar IaC (Terraform/Ansible) e CI/CD unificado com testes, segurança (SAST/DAST) e observabilidade.
+- Centralizar segredos em Vault/Secrets Manager, automatizar backups e preparar o programa de conformidade ISO/SOC com lastro blockchain.
+- Planejar PoC de blockchain permissionada (Hyperledger Besu/Quorum) alinhada ao orçamento aprovado.
+
+### 1.3 Diagnóstico funcional & mitigação
+
+| Área | Achado | Mitigação planejada |
+| --- | --- | --- |
+| IA | SDK OpenAI desatualizado e fallback Gemini sem testes de integração | Atualizar dependências, criar suíte de integração multi-provedor e registrar métricas comparativas (latência/custo/qualidade). |
+| Backend | Ausência de telemetria detalhada e caching nos endpoints públicos | Instrumentar tracing distribuído, habilitar métricas técnicas e aplicar cache/ETag onde cabível. |
+| Frontend | Risco de mixed content e interceptors sem handling de expiração simultânea | Centralizar interceptors com renovação sincronizada de tokens e reforçar políticas HTTPS nos ambientes. |
+| Plataforma | Scripts Windows-only e monitoramento distribuído manual | Portar automações para shell multi-OS, incluir execução via Docker Compose e consolidar observabilidade no pipeline. |
+
+### 1.4 Trabalho paralelizável
+- Atualização de SDKs LLM + implementação do orquestrador (times de IA e DevSecOps).
+- Refatoração do consumo de APIs no frontend (time Front).
+- Instrumentação de observabilidade e caching no backend (time Backend).
+- Planejamento e orçamento da PoC blockchain (time Plataforma).
+- Pipeline estatístico de correlação/regressão (Data/Analytics).
+
+### 1.5 Checklist integrado de validação
+```bash
+pytest -q                      # IA
+mvn clean verify               # Backend Spring Boot
+npm run lint && npm test       # Frontend React
+docker compose up -d          # Execução integrada com chaves LLM de sandbox
+```
 
 ---
 
