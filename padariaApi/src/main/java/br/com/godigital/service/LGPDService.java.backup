@@ -1,0 +1,242 @@
+package br.com.godigital.service;
+
+import br.com.godigital.entity.ConsentimentoLGPD;
+import br.com.godigital.entity.AuditLogLGPD;
+import br.com.godigital.entity.SolicitacaoLGPD;
+import br.com.godigital.repository.ConsentimentoLGPDRepository;
+import br.com.godigital.repository.AuditLogLGPDRepository;
+import br.com.godigital.repository.SolicitacaoLGPDRepository;
+import br.com.godigital.repository.ClienteRepository;
+import br.com.godigital.padariaapi.model.Cliente;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class LGPDService {
+    
+    private final ConsentimentoLGPDRepository consentimentoRepository;
+    private final AuditLogLGPDRepository auditLogRepository;
+    private final SolicitacaoLGPDRepository solicitacaoRepository;
+    private final ClienteRepository clienteRepository;
+    private final ObjectMapper objectMapper;
+    
+    /**
+     * Registra ou atualiza consentimento do usuário
+     */
+    public void registrarConsentimento(Long usuarioId, ConsentimentoLGPD.TipoFinalidade finalidade, 
+                                     Boolean consentimento, String ipOrigem, String detalhes) {
+        
+        // Verificar se já existe consentimento ativo para esta finalidade
+        Optional<ConsentimentoLGPD> consentimentoExistente = 
+            consentimentoRepository.findConsentimentoAtivoByUsuarioAndFinalidade(usuarioId, finalidade);
+        
+        if (consentimentoExistente.isPresent()) {
+            // Revogar consentimento anterior
+            ConsentimentoLGPD anterior = consentimentoExistente.get();
+            anterior.setRevogado(true);
+            anterior.setDataRevogacao(LocalDateTime.now());
+            anterior.setMotivoRevogacao("Substituído por nova escolha do usuário");
+            consentimentoRepository.save(anterior);
+        }
+        
+        // Criar novo consentimento
+        ConsentimentoLGPD novoConsentimento = new ConsentimentoLGPD();
+        novoConsentimento.setUsuarioId(usuarioId);
+        novoConsentimento.setFinalidade(finalidade);
+        novoConsentimento.setConsentimentoDado(consentimento);
+        novoConsentimento.setDataConsentimento(LocalDateTime.now());
+        novoConsentimento.setIpOrigem(ipOrigem);
+        novoConsentimento.setDetalhesConsentimento(detalhes);
+        
+        consentimentoRepository.save(novoConsentimento);
+        
+        // Log de auditoria
+        registrarAuditoria(usuarioId, "CONSENTIMENTO_ATUALIZADO", 
+                          String.format("Finalidade: %s, Consentimento: %s", finalidade, consentimento),
+                          ipOrigem);
+    }
+    
+    /**
+     * Busca consentimentos ativos do usuário
+     */
+    public List<ConsentimentoLGPD> obterConsentimentosAtivos(Long usuarioId) {
+        return consentimentoRepository.findConsentimentosAtivosByUsuario(usuarioId);
+    }
+    
+    /**
+     * Verifica se usuário tem consentimento para determinada finalidade
+     */
+    public boolean temConsentimento(Long usuarioId, ConsentimentoLGPD.TipoFinalidade finalidade) {
+        Optional<ConsentimentoLGPD> consentimento = 
+            consentimentoRepository.findConsentimentoAtivoByUsuarioAndFinalidade(usuarioId, finalidade);
+        
+        return consentimento.map(ConsentimentoLGPD::getConsentimentoDado).orElse(false);
+    }
+    
+    /**
+     * Exporta todos os dados pessoais do usuário (Portabilidade)
+     */
+    public Map<String, Object> exportarDadosPersonais(Long usuarioId, String ipOrigem) {
+        Cliente cliente = clienteRepository.findById(usuarioId)
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        
+        // Montar estrutura de dados para exportação
+        Map<String, Object> dadosExportacao = Map.of(
+            "dadosPessoais", Map.of(
+                "id", cliente.getId(),
+                "nome", cliente.getNome(),
+                "email", cliente.getEmail(),
+                "telefone", cliente.getTelefone(),
+                "cpf", maskCPF(cliente.getCpf()),
+                "dataNascimento", cliente.getDataNascimento(),
+                "endereco", cliente.getEndereco(),
+                "dataCadastro", cliente.getDataCadastro()
+            ),
+            "consentimentos", obterConsentimentosAtivos(usuarioId),
+            "historicoSolicitacoes", solicitacaoRepository.findByUsuarioIdOrderByDataSolicitacaoDesc(usuarioId),
+            "dataExportacao", LocalDateTime.now(),
+            "observacoes", "Dados exportados conforme Art. 15 da LGPD"
+        );
+        
+        registrarAuditoria(usuarioId, "EXPORTACAO_DADOS", "Dados exportados pelo titular", ipOrigem);
+        
+        return dadosExportacao;
+    }
+    
+    /**
+     * Processa solicitação de exclusão de dados
+     */
+    public String solicitarExclusaoDados(Long usuarioId, String motivo, String ipOrigem) {
+        Cliente cliente = clienteRepository.findById(usuarioId)
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        
+        // Verificar se há solicitações pendentes
+        List<SolicitacaoLGPD> solicitacoesPendentes = solicitacaoRepository
+            .findSolicitacoesAtivasByUsuarioAndTipo(usuarioId, SolicitacaoLGPD.TipoSolicitacao.EXCLUSAO);
+        
+        if (!solicitacoesPendentes.isEmpty()) {
+            throw new RuntimeException("Já existe uma solicitação de exclusão pendente para este usuário");
+        }
+        
+        // Criar solicitação
+        String protocolo = gerarProtocolo();
+        SolicitacaoLGPD solicitacao = new SolicitacaoLGPD();
+        solicitacao.setProtocolo(protocolo);
+        solicitacao.setUsuarioId(usuarioId);
+        solicitacao.setTipoSolicitacao(SolicitacaoLGPD.TipoSolicitacao.EXCLUSAO);
+        solicitacao.setDataSolicitacao(LocalDateTime.now());
+        solicitacao.setMotivo(motivo);
+        solicitacao.setIpOrigem(ipOrigem);
+        
+        solicitacaoRepository.save(solicitacao);
+        
+        registrarAuditoria(usuarioId, "SOLICITACAO_EXCLUSAO", 
+                          "Solicitação de exclusão criada. Protocolo: " + protocolo, ipOrigem);
+        
+        return protocolo;
+    }
+    
+    /**
+     * Anonimiza dados do usuário (para casos aprovados)
+     */
+    public void anonimizarDadosUsuario(Long usuarioId, String responsavel) {
+        Cliente cliente = clienteRepository.findById(usuarioId)
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        
+        // Salvar dados originais para auditoria
+        String dadosOriginais = serializarDados(cliente);
+        
+        // Anonimizar dados
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        cliente.setNome("ANONIMO_" + timestamp);
+        cliente.setEmail("anonimo_" + timestamp + "@deleted.local");
+        cliente.setTelefone("***-***-***");
+        cliente.setCpf(null);
+        cliente.setDataNascimento(null);
+        cliente.setEndereco("ENDERECO_ANONIMIZADO");
+        cliente.setAtivo(false);
+        
+        clienteRepository.save(cliente);
+        
+        // Revogar todos os consentimentos
+        List<ConsentimentoLGPD> consentimentos = consentimentoRepository.findConsentimentosAtivosByUsuario(usuarioId);
+        for (ConsentimentoLGPD consentimento : consentimentos) {
+            consentimento.setRevogado(true);
+            consentimento.setDataRevogacao(LocalDateTime.now());
+            consentimento.setMotivoRevogacao("Dados anonimizados conforme solicitação LGPD");
+        }
+        consentimentoRepository.saveAll(consentimentos);
+        
+        // Log de auditoria
+        AuditLogLGPD auditLog = new AuditLogLGPD();
+        auditLog.setUsuarioId(usuarioId);
+        auditLog.setAcao("ANONIMIZACAO_DADOS");
+        auditLog.setDetalhes("Dados anonimizados por: " + responsavel);
+        auditLog.setDadosAntes(dadosOriginais);
+        auditLog.setDadosDepois(serializarDados(cliente));
+        auditLog.setTimestamp(LocalDateTime.now());
+        auditLogRepository.save(auditLog);
+    }
+    
+    /**
+     * Registra log de auditoria
+     */
+    public void registrarAuditoria(Long usuarioId, String acao, String detalhes, String ipOrigem) {
+        AuditLogLGPD auditLog = new AuditLogLGPD();
+        auditLog.setUsuarioId(usuarioId);
+        auditLog.setAcao(acao);
+        auditLog.setDetalhes(detalhes);
+        auditLog.setTimestamp(LocalDateTime.now());
+        auditLog.setIpOrigem(ipOrigem);
+        
+        auditLogRepository.save(auditLog);
+    }
+    
+    /**
+     * Obtém estatísticas de conformidade LGPD
+     */
+    public Map<String, Object> obterEstatisticasConformidade() {
+        LocalDateTime inicioMes = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        
+        return Map.of(
+            "totalConsentimentosAtivos", consentimentoRepository.count(),
+            "solicitacoesExclusaoMes", solicitacaoRepository.countByTipoSince(
+                SolicitacaoLGPD.TipoSolicitacao.EXCLUSAO, inicioMes),
+            "solicitacoesAcessoMes", solicitacaoRepository.countByTipoSince(
+                SolicitacaoLGPD.TipoSolicitacao.ACESSO, inicioMes),
+            "exportacoesDadosMes", auditLogRepository.countByAcaoSince("EXPORTACAO_DADOS", inicioMes),
+            "consentimentosMarketingEmail", consentimentoRepository.countConsentimentosAtivosByFinalidade(
+                ConsentimentoLGPD.TipoFinalidade.MARKETING_EMAIL),
+            "dataUltimaAtualizacao", LocalDateTime.now()
+        );
+    }
+    
+    private String gerarProtocolo() {
+        return "LGPD" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) 
+               + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+    }
+    
+    private String maskCPF(String cpf) {
+        if (cpf == null || cpf.length() < 11) return "***";
+        return cpf.substring(0, 3) + ".***.**" + cpf.substring(9);
+    }
+    
+    private String serializarDados(Object objeto) {
+        try {
+            return objectMapper.writeValueAsString(objeto);
+        } catch (Exception e) {
+            return "Erro ao serializar dados: " + e.getMessage();
+        }
+    }
+}
