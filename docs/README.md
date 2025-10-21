@@ -18,7 +18,7 @@ Este diretório reúne os materiais oficiais do projeto, agrupados por objetivo.
 - **[DOCUMENTACAO_TECNICA_COMPLETA.md](technical/DOCUMENTACAO_TECNICA_COMPLETA.md)** — arquitetura dos módulos, dependências principais e parâmetros de configuração.
 
 ## 🗺️ Planejamento Estratégico
-- **[ROADMAP_TRANSFORMACAO_DIGITAL.md](ROADMAP_TRANSFORMACAO_DIGITAL.md)** — status consolidado do projeto, backlog estratégico, diretrizes de segurança, plano estatístico, iniciativas de blockchain/Smart Contracts e mapa atualizado de melhorias por módulo (IA, frontend, backend, plataforma).
+- **[ROADMAP_TRANSFORMACAO_DIGITAL.md](ROADMAP_TRANSFORMACAO_DIGITAL.md)** — status consolidado do projeto, backlog estratégico, diretrizes de segurança, plano estatístico e iniciativas de blockchain/Smart Contracts.
 
 ---
 
