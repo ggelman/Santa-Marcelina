@@ -514,11 +514,14 @@ def retrain_models():
         if not all(col in new_data_df.columns for col in ['ds', 'item_name', 'y']):
             return jsonify({'error': 'Dados incompletos. Esperado \'ds\', \'item_name\' e \'y\'.'}), 400
 
-            temp_dir = tempfile.gettempdir()
-            temp_new_data_path = os.path.join(temp_dir, 'new_sales_data.csv')
-            new_data_df.to_csv(temp_new_data_path, index=False)
+        temp_dir = tempfile.gettempdir()
+        temp_new_data_path = os.path.join(temp_dir, 'new_sales_data.csv')
+        new_data_df.to_csv(temp_new_data_path, index=False)
 
-            subprocess.Popen([sys.executable, RETRAINER_SCRIPT, DATA_FILE, MODELS_DIR, temp_new_data_path])
+        subprocess.Popen(
+            [sys.executable, RETRAINER_SCRIPT, DATA_FILE, MODELS_DIR, temp_new_data_path],
+            close_fds=os.name != 'nt'
+        )
 
         return jsonify({'message': 'Retreinamento iniciado em segundo plano.'}), 202
 
