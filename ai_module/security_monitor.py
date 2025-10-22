@@ -8,6 +8,7 @@ from collections import defaultdict, deque
 from datetime import datetime, timedelta
 from threading import Lock
 import json
+import uuid
 
 class SecurityMonitor:
     def __init__(self):
@@ -35,17 +36,35 @@ class SecurityMonitor:
         """Registra uma requisição para análise"""
         with self.lock:
             timestamp = datetime.now()
+            request_id = uuid.uuid4().hex
             request_data = {
                 'timestamp': timestamp,
                 'endpoint': endpoint,
                 'status_code': status_code,
-                'user_agent': user_agent
+                'user_agent': user_agent,
+                'request_id': request_id
             }
-            
+
             self.request_log[ip].append(request_data)
-            
+
             # Analisa padrões suspeitos
             self._analyze_patterns(ip)
+
+            return request_id
+
+    def update_request_status(self, ip, request_id, status_code):
+        """Atualiza o status de uma requisição específica."""
+        with self.lock:
+            requests = self.request_log.get(ip)
+            if not requests:
+                return False
+
+            for request_data in reversed(requests):
+                if request_data.get('request_id') == request_id:
+                    request_data['status_code'] = status_code
+                    return True
+
+            return False
     
     def _analyze_patterns(self, ip):
         """Analisa padrões de requisições para detectar ameaças"""
