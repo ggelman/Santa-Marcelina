@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, g
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -77,27 +77,30 @@ def log_request_security():
         user_agent = request.headers.get('User-Agent', '')
         
         # Registra a requisição
-        security_monitor.log_request(
-            ip=ip or 'unknown',
+        ip = ip or 'unknown'
+        request_id = security_monitor.log_request(
+            ip=ip,
             endpoint=request.path,
             status_code=0,  # Será atualizado no after_request
             user_agent=user_agent
         )
+        g.security_request_ip = ip
+        g.security_request_id = request_id
 
 @app.after_request  
 def log_response_security(response):
     """Atualiza o log com o código de resposta"""
     if request.endpoint and not request.endpoint.startswith('static'):
-        ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
-        if ip and ',' in ip:
-            ip = ip.split(',')[0].strip()
-            
-        # Atualiza o último registro com o status code real
-        if ip and hasattr(security_monitor.request_log[ip or 'unknown'], '__len__'):
-            if len(security_monitor.request_log[ip or 'unknown']) > 0:
-                last_request = security_monitor.request_log[ip or 'unknown'][-1]
-                last_request['status_code'] = response.status_code
-    
+        request_ip = getattr(g, 'security_request_ip', None)
+        request_id = getattr(g, 'security_request_id', None)
+
+        if request_ip and request_id:
+            security_monitor.update_request_status(
+                ip=request_ip,
+                request_id=request_id,
+                status_code=response.status_code
+            )
+
     return response
 
 # Inicializa sistema de monitoramento e logging
