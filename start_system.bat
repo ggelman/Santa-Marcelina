@@ -11,7 +11,7 @@ echo.
 REM Verificar se está no diretório correto
 if not exist "ai_module" (
     echo ❌ ERRO: Execute este script na pasta SRC
-    echo 💡 Caminho correto: C:\projects\FIAP\Fase6\SRC
+    echo 💡 Caminho correto: C:\projects\FIAP\
     pause
     exit /b 1
 )
