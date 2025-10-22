@@ -1,0 +1,54 @@
+# General
+*.log
+*.tmp
+*.swp
+*.swo
+*.orig
+*.rej
+Thumbs.db
+.DS_Store
+.node_modules
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE / Editor
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Node.js
+node_modules/
+dist/
+build/
+.cache/
+.next/
+.nuxt/
+out/
+coverage/
+
+# Java / Maven
+target/
+*.class
+hs_err_pid*
+replay_pid*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.tox/
+.venv/
+venv/
+env/
+ai_module/venv_ai/
+*.egg-info/
+.eggs/
+

@@ -1,1 +1,0 @@
-{"timestamp": "2025-10-01T12:08:02.066947", "level": "ERROR", "logger": "ai_service", "message": "Teste de log de erro", "module": "monitoring_system", "function": "_log", "line": 64, "service_timestamp": "2025-10-01T12:08:02.066690", "service": "ai_module", "version": "1.0.0", "memory_usage_mb": 21.03125, "cpu_percent": 0.0}
