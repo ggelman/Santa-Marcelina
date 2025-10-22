@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import { useAuth } from "../context/AuthContext"
@@ -93,11 +93,20 @@ const CredentialsInfo = styled.div`
 export const Login = () => {
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
+  const [otp, setOtp] = useState("")
   const [erro, setErro] = useState("")
   const [carregando, setCarregando] = useState(false)
+  const [mfaStep, setMfaStep] = useState("password")
+  const [mfaSecret, setMfaSecret] = useState("")
+  const [mfaUrl, setMfaUrl] = useState("")
 
   const { login } = useAuth()
   const navigate = useNavigate()
+
+  const qrCodeUrl = useMemo(() => {
+    if (!mfaUrl) return ""
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(mfaUrl)}`
+  }, [mfaUrl])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -105,9 +114,36 @@ export const Login = () => {
     setCarregando(true)
 
     try {
-      const sucesso = await login(email, senha)
-      if (sucesso) {
+      const resultado = await login(email, senha, mfaStep !== "password" ? otp : undefined)
+
+      if (resultado.success) {
+        setOtp("")
+        setMfaStep("password")
         navigate("/")
+        return
+      }
+
+      if (resultado.mfaSetupRequired) {
+        setMfaStep("setup")
+        setMfaSecret(resultado.secret || "")
+        setMfaUrl(resultado.otpauthUrl || "")
+        setOtp("")
+        setErro("Finalize a configuração do autenticador e informe o código gerado.")
+        return
+      }
+
+      if (resultado.mfaRequired) {
+        setMfaStep("challenge")
+        setOtp("")
+        setErro("Informe o código de autenticação para continuar.")
+        return
+      }
+
+      if (resultado.error) {
+        setErro(resultado.error)
+        if (resultado.error.toLowerCase().includes("mfa")) {
+          setMfaStep("challenge")
+        }
       } else {
         setErro("Email ou senha inválidos")
       }
@@ -122,7 +158,7 @@ export const Login = () => {
     <LoginContainer>
       <LoginCard>
         <Logo>
-          <img a alt="Image"lt="Image"
+          <img
             src="/images/logo-santa-marcelina.png"
             alt="Logo Padaria Santa Marcelina"
             onError={(e) => {
@@ -161,17 +197,50 @@ export const Login = () => {
             required
           />
 
+          {mfaStep !== "password" && (
+            <Input
+              type="text"
+              placeholder="Código do autenticador"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={6}
+              required
+            />
+          )}
+
           <Button type="submit" disabled={carregando} style={{ backgroundColor: "#B8860B" }}>
-            {carregando ? "Entrando..." : "Entrar"}
+            {carregando ? "Validando..." : mfaStep === "password" ? "Entrar" : "Confirmar"}
           </Button>
         </Form>
 
         {erro && <ErrorMessage>{erro}</ErrorMessage>}
 
+        {mfaStep === "setup" && (
+          <div style={{ marginTop: "20px" }}>
+            <h4 style={{ color: "#B8860B", marginBottom: "10px" }}>Ative o Autenticador</h4>
+            <p style={{ fontSize: "14px", color: "#555", marginBottom: "10px" }}>
+              Escaneie o QR Code abaixo no aplicativo de autenticação ou insira o código manualmente.
+            </p>
+            {qrCodeUrl && (
+              <img
+                src={qrCodeUrl}
+                alt="QR Code MFA"
+                style={{ margin: "10px auto", display: "block", border: "1px solid #eee", borderRadius: "8px", padding: "8px", background: "white" }}
+              />
+            )}
+            <p style={{ fontFamily: "monospace", fontSize: "16px", letterSpacing: "2px", color: "#333" }}>{mfaSecret}</p>
+            <p style={{ fontSize: "13px", color: "#777" }}>Após cadastrar, informe o código de 6 dígitos no campo acima.</p>
+          </div>
+        )}
+
         <CredentialsInfo>
           <h4>🔐 Credenciais para Teste</h4>
           <div>
             <strong>Admin:</strong> <span>admin@padaria.com</span> / <span>admin123</span>
+            <br />
+            <small style={{ color: "#777" }}>Será solicitado um código MFA após o login.</small>
           </div>
         </CredentialsInfo>
       </LoginCard>

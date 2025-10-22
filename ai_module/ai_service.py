@@ -38,6 +38,8 @@ from fallback_service import (
     get_sales_data_with_fallback, get_products_with_fallback,
     generate_insight_with_fallback, predict_with_fallback
 )
+from orchestrator import LLMProvider, ProviderResponse, build_orchestrator
+from analytics_pipeline import generate_analytics_snapshot, AnalyticsError
 
 # Sistema de monitoramento de segurança
 from security_monitor import security_monitor
@@ -161,6 +163,55 @@ def make_prediction(model, future_dates_df):
     return forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
 
 DATA_COLLECTOR_SCRIPT = 'data_collector.py'
+
+
+def _build_llm_orchestrator():
+    providers = []
+
+    if _GEMINI_AVAILABLE and gemini_generate_insights is not None:
+        def gemini_handler(prompt: str, options: dict) -> ProviderResponse:
+            ok, text, provider = gemini_generate_insights(prompt)
+            return ProviderResponse(ok=ok, content=text, provider=provider, metadata={"provider": provider})
+
+        providers.append(LLMProvider("gemini", gemini_handler, weight=3))
+
+    def openai_handler(prompt: str, options: dict) -> ProviderResponse:
+        retries = int(os.getenv('OPENAI_RETRIES', 2))
+        model = os.getenv('OPENAI_MODEL', 'gpt-3.5-turbo')
+        for attempt in range(1, retries + 2):
+            try:
+                response = openai.ChatCompletion.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": options.get("system_prompt", "Você é um assistente de gestão de padarias. Seja prático e direto.")},
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=options.get("max_tokens", 200),
+                    temperature=options.get("temperature", 0.6),
+                )
+                if hasattr(response.choices[0], 'message'):
+                    content = response.choices[0].message.content.strip()
+                else:
+                    content = getattr(response.choices[0], 'text', '').strip()
+                metadata = {
+                    "model": model,
+                    "attempt": attempt,
+                }
+                return ProviderResponse(ok=True, content=content, provider="openai", metadata=metadata)
+            except Exception as exc:  # pylint: disable=broad-except
+                logging.exception("Erro OpenAI attempt %s", attempt)
+                time.sleep(attempt * 1.0)
+        return ProviderResponse(ok=False, content="OpenAI indisponível", provider="openai")
+
+    providers.append(LLMProvider("openai", openai_handler, weight=1))
+
+    if not providers:
+        return None
+
+    return build_orchestrator(providers)
+
+
+llm_orchestrator = _build_llm_orchestrator()
 
 
 def update_data():
@@ -643,75 +694,76 @@ def generate_insight():
 
         if not product or prediction is None:
             return jsonify({"error": "produto e previsao são obrigatórios"}), 400
+
         prompt = (
             f"Você é um assistente de gestão de padarias. A previsão de demanda para o produto '{product}' "
             f"amanhã é de {prediction} unidades. Gere: (1) um insight curto em 1-2 frases; (2) uma ação recomendada curta; "
             f"(3) uma confidência de 0 a 1 explicando o quão confiante você está nesta recomendação. Seja direto e prático."
         )
 
-        # Try Gemini first
-        if _GEMINI_AVAILABLE and gemini_generate_insights is not None:
-            try:
-                logging.info('Chamando Gemini para gerar insight')
-                ok, text, provider = gemini_generate_insights(prompt)
-                if ok:
-                    # Try to parse structured output if Gemini returned JSON
-                    try:
-                        parsed = json.loads(text)
-                        return jsonify({'insight': parsed.get('insight'), 'action': parsed.get('action'), 'confidence': parsed.get('confidence', 0.0), 'provider': provider})
-                    except Exception:
-                        return jsonify({'insight': text, 'action': None, 'confidence': None, 'provider': provider})
-                else:
-                    logging.warning(f'Gemini não retornou resposta útil: {text}')
-            except Exception as e:
-                logging.exception(f'Erro ao chamar Gemini: {e}')
+        if llm_orchestrator is None:
+            logging.error("Orquestrador LLM não configurado")
+            return jsonify({'error': 'Serviço de LLM indisponível'}), 503
 
-        # Fallback to OpenAI with retries
-        openai_attempts = int(os.getenv('OPENAI_RETRIES', 2))
-        for attempt in range(1, openai_attempts + 2):
-            try:
-                logging.info(f'Chamando OpenAI (attempt {attempt})')
-                response = openai.ChatCompletion.create(
-                    model=os.getenv('OPENAI_MODEL', 'gpt-3.5-turbo'),
-                    messages=[
-                        {"role": "system", "content": "Você é um assistente de gestão de padarias. Seja prático e direto."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=200,
-                    temperature=0.6,
-                )
-                # New API may return different structure; defensive parsing
-                if hasattr(response.choices[0], 'message'):
-                    text = response.choices[0].message.content.strip()
-                else:
-                    text = getattr(response.choices[0], 'text', '').strip()
+        options = {
+            "system_prompt": "Você é um assistente de gestão de padarias. Seja prático e direto.",
+            "max_tokens": 220,
+            "temperature": 0.6,
+        }
 
-                # Try parse JSON in response
-                try:
-                    parsed = json.loads(text)
-                    return jsonify({'insight': parsed.get('insight'), 'action': parsed.get('action'), 'confidence': parsed.get('confidence', 0.0), 'provider': 'openai'})
-                except Exception:
-                    # Heuristic extraction: split into lines, first line = insight, second = action
-                    lines = [l.strip() for l in text.split('\n') if l.strip()]
-                    insight_text = lines[0] if lines else text
-                    action_text = lines[1] if len(lines) > 1 else None
-                    # Confidence heuristic: look for percentage or numeric in text
-                    confidence = None
-                    import re
-                    m = re.search(r"(\d{1,3})%", text)
-                    if m:
-                        confidence = float(m.group(1)) / 100.0
+        response = llm_orchestrator.generate(prompt, options)
+        if not response.ok:
+            return jsonify({'error': 'Falha ao gerar insight com LLMs', 'attempts': response.metadata.get('attempts', [])}), 500
 
-                    return jsonify({'insight': insight_text, 'action': action_text, 'confidence': confidence, 'provider': 'openai'})
+        text = response.content
+        provider = response.provider
+        metadata = response.metadata
 
-            except Exception as e:
-                logging.exception(f'Erro OpenAI attempt {attempt}: {e}')
-                time.sleep(attempt * 1.0)
+        try:
+            parsed = json.loads(text)
+            insight_payload = {
+                'insight': parsed.get('insight'),
+                'action': parsed.get('action'),
+                'confidence': parsed.get('confidence', parsed.get('confidence_score', 0.0)),
+                'provider': provider,
+                'metadata': metadata,
+            }
+            return jsonify(insight_payload)
+        except Exception:
+            lines = [l.strip() for l in text.split('\n') if l.strip()]
+            insight_text = lines[0] if lines else text
+            action_text = lines[1] if len(lines) > 1 else None
+            confidence = metadata.get('confidence')
+            if confidence is None:
+                import re
+                match = re.search(r"(\d{1,3})%", text)
+                if match:
+                    confidence = float(match.group(1)) / 100.0
 
-        return jsonify({'error': 'Falha ao gerar insight com LLMs'}), 500
+            return jsonify({
+                'insight': insight_text,
+                'action': action_text,
+                'confidence': confidence,
+                'provider': provider,
+                'metadata': metadata,
+            })
 
     except Exception as e:
+        logging.exception("Erro ao gerar insight")
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/ai/analytics/correlation', methods=['GET'])
+def analytics_snapshot():
+    try:
+        product = request.args.get('produto')
+        snapshot = generate_analytics_snapshot(DATA_FILE, product)
+        return jsonify(snapshot)
+    except AnalyticsError as error:
+        return jsonify({'error': str(error)}), 400
+    except Exception as exc:  # pylint: disable=broad-except
+        logging.exception("Erro no pipeline analítico")
+        return jsonify({'error': 'Falha interna no pipeline estatístico'}), 500
 
 # Inicialização do cache quando o serviço inicia
 def initialize_cache():

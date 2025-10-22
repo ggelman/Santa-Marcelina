@@ -32,23 +32,41 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, senha) => {
+  const login = async (email, senha, otp) => {
     try {
-      const response = await api.post('/auth/login', { email, senha });
-      const { accessToken, refreshToken, user } = response.data;
+      const response = await api.post('/auth/login', { email, senha, otp }, {
+        validateStatus: (status) => status < 500,
+      });
 
-      if (accessToken && refreshToken && user) {
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem("user", JSON.stringify(user));
-        setUser(user);
-        return true;
+      if (response.status === 200) {
+        const { accessToken, refreshToken, user } = response.data;
+        if (accessToken && refreshToken && user) {
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+          localStorage.setItem("user", JSON.stringify(user));
+          setUser(user);
+          return { success: true, user };
+        }
       }
-      return false;
+
+      if (response.status === 202) {
+        return { mfaRequired: true };
+      }
+
+      if (response.status === 428) {
+        return {
+          mfaSetupRequired: true,
+          secret: response.data?.secret,
+          otpauthUrl: response.data?.otpauthUrl,
+          user: response.data?.user,
+        };
+      }
+
+      return { error: response.data?.error || 'Credenciais inválidas' };
     } catch (error) {
       console.error("Erro no login:", error.response?.data || error.message);
       logout();
-      return false;
+      return { error: 'Erro ao efetuar login' };
     }
   };
 

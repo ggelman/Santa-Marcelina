@@ -1,9 +1,14 @@
 package br.com.godigital.padariaapi.controller;
 
+import br.com.godigital.padariaapi.dto.RefreshTokenRequest;
 import br.com.godigital.padariaapi.model.Usuario;
 import br.com.godigital.padariaapi.repository.UsuarioRepository;
+import br.com.godigital.padariaapi.service.MfaService;
+import br.com.godigital.padariaapi.service.RefreshTokenService;
+import br.com.godigital.padariaapi.service.RefreshTokenService.IssuedToken;
 import br.com.godigital.padariaapi.util.JwtUtil;
-import br.com.godigital.padariaapi.dto.RefreshTokenRequest;
+import io.micrometer.observation.annotation.Observed;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,11 +18,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,43 +37,60 @@ public class AuthController {
     private static final String EXPIRES_IN_KEY = "expiresIn";
     private static final int TOKEN_EXPIRY_SECONDS = 86400; // 24 hours
     private static final String INVALID_REFRESH_TOKEN = "Invalid refresh token";
-    
+    private static final String INVALID_MFA_CODE = "Invalid or missing MFA code";
+    private static final String MFA_REQUIRED_KEY = "mfaRequired";
+    private static final String MFA_SETUP_KEY = "mfaSetupRequired";
+    private static final String OTP_AUTH_URL_KEY = "otpauthUrl";
+    private static final String SECRET_KEY = "secret";
+
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
+    private final RefreshTokenService refreshTokenService;
+    private final MfaService mfaService;
 
     public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
             UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
-            UserDetailsService userDetailsService) {
+            UserDetailsService userDetailsService, RefreshTokenService refreshTokenService,
+            MfaService mfaService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
+        this.refreshTokenService = refreshTokenService;
+        this.mfaService = mfaService;
     }
 
     @PostMapping("/login")
+    @Observed(name = "auth.login", contextualName = "login-administrativo")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getSenha()));
 
         Usuario usuario = (Usuario) authentication.getPrincipal();
 
+        ResponseEntity<Map<String, Object>> mfaResponse = handleMfaFlow(usuario, authRequest.getOtp());
+        if (mfaResponse != null) {
+            return mfaResponse;
+        }
+
         usuario.setUltimoAcesso(LocalDateTime.now());
         usuarioRepository.save(usuario);
 
         String accessToken = jwtUtil.generateToken(usuario);
-        String refreshToken = jwtUtil.generateRefreshToken(usuario);
+        IssuedToken refreshToken = refreshTokenService.issueToken(usuario);
 
         Map<String, Object> userResponse = createUserResponse(usuario);
-        Map<String, Object> response = createTokenResponse(accessToken, refreshToken, userResponse);
+        Map<String, Object> response = createTokenResponse(accessToken, refreshToken.tokenValue(), userResponse);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")
+    @Observed(name = "auth.refresh", contextualName = "refresh-token")
     public ResponseEntity<Map<String, Object>> refreshToken(@RequestBody RefreshTokenRequest refreshRequest) {
         try {
             String refreshToken = refreshRequest.getRefreshToken();
@@ -84,11 +106,11 @@ public class AuthController {
                 return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, INVALID_REFRESH_TOKEN));
             }
 
-            // Generate new tokens
-            String newAccessToken = jwtUtil.generateToken(userDetails);
-            String newRefreshToken = jwtUtil.generateRefreshToken(userDetails);
+            IssuedToken rotatedToken = refreshTokenService.rotateToken(refreshToken, (Usuario) userDetails);
 
-            Map<String, Object> response = createTokenResponse(newAccessToken, newRefreshToken, null);
+            String newAccessToken = jwtUtil.generateToken(userDetails);
+
+            Map<String, Object> response = createTokenResponse(newAccessToken, rotatedToken.tokenValue(), null);
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -143,6 +165,7 @@ public class AuthController {
     public static class AuthRequest {
         private String email;
         private String senha;
+        private String otp;
 
         public String getEmail() {
             return email;
@@ -159,5 +182,55 @@ public class AuthController {
         public void setSenha(String senha) {
             this.senha = senha;
         }
+
+        public String getOtp() {
+            return otp;
+        }
+
+        public void setOtp(String otp) {
+            this.otp = otp;
+        }
+    }
+
+    private ResponseEntity<Map<String, Object>> handleMfaFlow(Usuario usuario, String otp) {
+        if (!"ADMINISTRADOR".equalsIgnoreCase(usuario.getRole())) {
+            return null;
+        }
+
+        if (usuario.getMfaSecret() == null || usuario.getMfaSecret().isBlank()) {
+            usuario.setMfaSecret(mfaService.generateNewSecret());
+            usuarioRepository.save(usuario);
+        }
+
+        if (!usuario.isMfaEnabled()) {
+            if (otp == null || otp.isBlank()) {
+                Map<String, Object> response = new HashMap<>();
+                response.put(MFA_SETUP_KEY, true);
+                response.put(SECRET_KEY, usuario.getMfaSecret());
+                response.put(OTP_AUTH_URL_KEY,
+                        mfaService.buildOtpAuthUrl("Padaria Santa Marcelina", usuario.getEmail(), usuario.getMfaSecret()));
+                response.put("user", createUserResponse(usuario));
+                return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(response);
+            }
+
+            if (mfaService.isCodeValid(usuario.getMfaSecret(), otp)) {
+                usuario.setMfaEnabled(true);
+                usuario.setLastMfaEnrollment(LocalDateTime.now());
+                usuarioRepository.save(usuario);
+                return null;
+            }
+
+            return ResponseEntity.status(401).body(Map.of(ERROR_KEY, INVALID_MFA_CODE));
+        }
+
+        if (otp == null || otp.isBlank()) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of(MFA_REQUIRED_KEY, true));
+        }
+
+        if (!mfaService.isCodeValid(usuario.getMfaSecret(), otp)) {
+            return ResponseEntity.status(401).body(Map.of(ERROR_KEY, INVALID_MFA_CODE));
+        }
+
+        return null;
     }
 }

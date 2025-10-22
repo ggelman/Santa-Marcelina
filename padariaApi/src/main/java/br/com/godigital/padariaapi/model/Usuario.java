@@ -7,9 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -31,10 +31,22 @@ public class Usuario implements UserDetails {
     private String senha;
     
     private String role;
-    
+
     private LocalDateTime ultimoAcesso;
-    
+
     private boolean ativo = true;
+
+    @Column(name = "mfa_secret", length = 160)
+    private String mfaSecret;
+
+    @Column(name = "mfa_enabled")
+    private boolean mfaEnabled;
+
+    @Column(name = "webauthn_registered")
+    private boolean webauthnRegistered;
+
+    @Column(name = "last_mfa_enrollment")
+    private LocalDateTime lastMfaEnrollment;
 
     // Getters and Setters
     public Long getId() {
@@ -91,6 +103,38 @@ public class Usuario implements UserDetails {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public String getMfaSecret() {
+        return mfaSecret;
+    }
+
+    public void setMfaSecret(String mfaSecret) {
+        this.mfaSecret = mfaSecret;
+    }
+
+    public boolean isMfaEnabled() {
+        return mfaEnabled;
+    }
+
+    public void setMfaEnabled(boolean mfaEnabled) {
+        this.mfaEnabled = mfaEnabled;
+    }
+
+    public boolean isWebauthnRegistered() {
+        return webauthnRegistered;
+    }
+
+    public void setWebauthnRegistered(boolean webauthnRegistered) {
+        this.webauthnRegistered = webauthnRegistered;
+    }
+
+    public LocalDateTime getLastMfaEnrollment() {
+        return lastMfaEnrollment;
+    }
+
+    public void setLastMfaEnrollment(LocalDateTime lastMfaEnrollment) {
+        this.lastMfaEnrollment = lastMfaEnrollment;
     }
 
     // UserDetails implementation
