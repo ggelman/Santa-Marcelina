@@ -28,12 +28,14 @@ source .venv/bin/activate  # Linux/macOS
 # .venv\Scripts\activate  # Windows PowerShell
 pip install -r requirements.txt
 ```
+- Copie `ai_module/.env.example` para `ai_module/.env` e ajuste credenciais/APIs quando necessário.
 
 ### 2.2 Dependências do frontend React
 ```bash
 cd FrontGoDgital
 npm install
 ```
+- Copie `FrontGoDgital/.env.example` para `FrontGoDgital/.env` e ajuste a URL da API se estiver usando outro endpoint.
 
 ### 2.3 Certificados e perfis HTTPS
 - Certificados pré-gerados vivem em `ssl_certificates/` (`server.crt`, `server.key`, `keystore.p12`).

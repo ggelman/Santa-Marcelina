@@ -1,6 +1,6 @@
 # ⚡ Início Rápido (≤ 5 minutos)
 
-Guia objetivo para subir o goDigital Code localmente. Ideal para demonstrações ou validações rápidas após um clone do repositório.
+Guia objetivo para subir o Synvia localmente. Ideal para demonstrações ou validações rápidas após um clone do repositório.
 
 ---
 

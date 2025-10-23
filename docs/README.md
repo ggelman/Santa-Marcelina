@@ -1,35 +1,35 @@
-# 📚 Índice de Documentação do goDigital Code
+# Índice de Documentação — Synvia Platform
 
-Este diretório reúne os materiais oficiais do projeto, agrupados por objetivo. Todos os arquivos foram revisados para refletir o estado atual da solução e evitar redundâncias.
-
----
-
-## 🚀 Guias Operacionais (`guides/`)
-- **[INICIO_RAPIDO.md](guides/INICIO_RAPIDO.md)** — passo a passo resumido para executar o backend, frontend e módulo de IA em ambiente local.
-- **[GUIA_EXECUCAO_COMPLETO.md](guides/GUIA_EXECUCAO_COMPLETO.md)** — procedimentos detalhados de preparação, execução, verificação e desligamento do ambiente.
-
-## 🔒 Segurança (`security/`)
-- **[HTTPS_CONFIGURATION.md](security/HTTPS_CONFIGURATION.md)** — configuração dos certificados e do perfil HTTPS do Spring Boot.
-- **[RATE_LIMITING_DDOS_PROTECTION.md](security/RATE_LIMITING_DDOS_PROTECTION.md)** — controles de limitação de requisições e mitigação de abusos.
-- **[RESOLVER_CERTIFICADO_SSL.md](security/RESOLVER_CERTIFICADO_SSL.md)** — solução de problemas comuns na importação dos certificados.
-- **[SECURITY_ALERTS_DOCUMENTATION.md](security/SECURITY_ALERTS_DOCUMENTATION.md)** — visão geral das métricas e alertas monitorados.
-
-## 🧠 Referência Técnica (`technical/`)
-- **[DOCUMENTACAO_TECNICA_COMPLETA.md](technical/DOCUMENTACAO_TECNICA_COMPLETA.md)** — arquitetura dos módulos, dependências principais e parâmetros de configuração.
-
-## 🗺️ Planejamento Estratégico
-- **[ROADMAP_TRANSFORMACAO_DIGITAL.md](ROADMAP_TRANSFORMACAO_DIGITAL.md)** — status consolidado do projeto, backlog estratégico, diretrizes de segurança, plano estatístico e iniciativas de blockchain/Smart Contracts.
-- **[roadmap/FASE7_PLANO_ACAO.md](roadmap/FASE7_PLANO_ACAO.md)** — plano detalhado de execução da Fase 7 (hardening, observabilidade e estatística aplicada) com sprints, responsáveis e critérios de conclusão.
-
-## 📈 Status & Prioridades
-- Visão consolidada por domínio, prioridades imediatas e checklist de validação: consulte o [README principal](../README.md).
-- Detalhamento operacional (IA, frontend, backend, plataforma) e trabalho paralelizável: seção 1 do [roadmap estratégico](ROADMAP_TRANSFORMACAO_DIGITAL.md).
+Este diretório reúne os materiais oficiais do projeto Synvia. Utilize os tópicos abaixo para localizar rapidamente o conteúdo desejado.
 
 ---
 
-### ℹ️ Convenções
-- Todos os arquivos utilizam Markdown e estão em português.
-- Links relativos consideram a raiz da pasta `docs/`.
-- Sugestões e atualizações devem ser registradas via pull request e anotadas neste índice.
+## Guias Operacionais (`guides/`)
+- **[INICIO_RAPIDO.md](guides/INICIO_RAPIDO.md)** — passo a passo resumido para executar frontend, core API e IA em HTTP.
+- **[GUIA_EXECUCAO_COMPLETO.md](guides/GUIA_EXECUCAO_COMPLETO.md)** — procedimentos completos de preparação, execução, validação e desligamento.
+
+## Segurança (`security/`)
+- **[HTTPS_CONFIGURATION.md](security/HTTPS_CONFIGURATION.md)** — ativação opcional do perfil HTTPS no Spring Boot.
+- **[RATE_LIMITING_DDOS_PROTECTION.md](security/RATE_LIMITING_DDOS_PROTECTION.md)** — controles de rate limiting e mitigação de abusos.
+- **[RESOLVER_CERTIFICADO_SSL.md](security/RESOLVER_CERTIFICADO_SSL.md)** — troubleshooting de certificados.
+- **[SECURITY_ALERTS_DOCUMENTATION.md](security/SECURITY_ALERTS_DOCUMENTATION.md)** — visão geral de métricas e alertas.
+
+## Referência Técnica (`technical/`)
+- **[DOCUMENTACAO_TECNICA_COMPLETA.md](technical/DOCUMENTACAO_TECNICA_COMPLETA.md)** — arquitetura dos módulos, dependências e parâmetros de configuração.
+
+## Planejamento Estratégico
+- **[ROADMAP_SYNVIA.md](roadmap/ROADMAP_SYNVIA.md)** — roadmap unificado com status atual, prioridades e backlog.
+- Documentos anteriores (`ROADMAP_TRANSFORMACAO_DIGITAL.md`, `roadmap/FASE7_PLANO_ACAO.md`) foram arquivados e redirecionam para o novo roadmap.
+
+## Artefatos auxiliares
+- **Templates `.env`**: `FrontGoDgital/.env.example` e `ai_module/.env.example` (copie para `.env` localmente).
+- **Scripts utilitários**: `start_system.bat`, `stop_system.bat`, `system_status.bat`, `test_sistema_seguranca.bat`.
+
+---
+
+### Convenções
+- Arquivos em Markdown e em português.
+- Links relativos consideram a raiz de `docs/`.
+- Atualizações devem ser registradas via pull request e anotadas neste índice.
 
 > Última atualização: outubro/2025
