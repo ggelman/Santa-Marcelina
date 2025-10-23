@@ -83,7 +83,7 @@ curl http://localhost:3000 --head
 
 ### 4.2 Login padrão
 - URL: `http://localhost:3000/login`
-- Usuário: `admin@padaria.com`
+- Usuário: `admin@synvia.io`
 - Senha: `admin123`
 
 ### 4.3 Testes funcionais rápidos

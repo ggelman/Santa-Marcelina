@@ -371,7 +371,7 @@ export const CupomImpressao = ({ venda, onClose, onPrint }) => {
           <div class="cupom-footer">
             <div class="agradecimento">OBRIGADO PELA PREFERÊNCIA!</div>
             <div>Volte sempre!</div>
-            <div>www.padariastamarcelina.com.br</div>
+            <div>www.synvia.io</div>
             ${fidelidadeInfo}
           </div>
         </body>
@@ -490,7 +490,7 @@ export const CupomImpressao = ({ venda, onClose, onPrint }) => {
           <CupomFooter>
             <div className="agradecimento">OBRIGADO PELA PREFERÊNCIA!</div>
             <div>Volte sempre!</div>
-            <div>www.padariastamarcelina.com.br</div>
+            <div>www.synvia.io</div>
 
             {venda.pedido.cliente && (
               <div className="fidelidade-info">

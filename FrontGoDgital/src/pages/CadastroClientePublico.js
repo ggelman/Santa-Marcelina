@@ -6,10 +6,11 @@ import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { Spinner } from '../components/Spinner';
 import api from '../services/api';
+import { BRAND } from '../config/branding';
 
 const ClienteContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--synvia-background) 0%, rgba(20, 27, 65, 0.08) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,12 +27,12 @@ const WelcomeCard = styled(Card)`
   box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
 `;
 
-const LogoPadaria = styled.div`
+const LogoBrand = styled.div`
   text-align: center;
   margin-bottom: 30px;
   
   h1 {
-    color: #8B4513;
+    color: var(--synvia-space-cadet);
     font-size: 2.5rem;
     font-weight: bold;
     margin: 0;
@@ -39,7 +40,7 @@ const LogoPadaria = styled.div`
   }
   
   p {
-    color: #666;
+    color: var(--synvia-text-muted);
     font-size: 1.1rem;
     margin: 10px 0 0 0;
   }
@@ -51,15 +52,15 @@ const Form = styled.form`
 `;
 
 const ConsentimentoSection = styled.div`
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: var(--synvia-surface-alt);
+  border: 1px solid var(--synvia-border);
   border-radius: 8px;
   padding: 20px;
   margin: 20px 0;
 `;
 
 const ConsentimentoTitle = styled.h3`
-  color: #495057;
+  color: var(--synvia-text-primary);
   font-size: 1.2rem;
   margin: 0 0 15px 0;
   display: flex;
@@ -78,9 +79,9 @@ const ConsentimentoItem = styled.div`
   gap: 12px;
   margin-bottom: 15px;
   padding: 12px;
-  background: white;
+  background: var(--synvia-surface);
   border-radius: 6px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--synvia-border);
   
   input[type="checkbox"] {
     margin-top: 2px;
@@ -93,13 +94,13 @@ const ConsentimentoText = styled.div`
   flex: 1;
   
   strong {
-    color: #495057;
+    color: var(--synvia-text-primary);
     display: block;
     margin-bottom: 4px;
   }
   
   small {
-    color: #6c757d;
+    color: var(--synvia-text-muted);
     line-height: 1.4;
   }
   
@@ -172,7 +173,7 @@ const QRCodeInfo = styled.div`
   
   p {
     margin: 0;
-    color: #495057;
+    color: var(--synvia-text-primary);
     font-size: 1rem;
   }
   
@@ -548,10 +549,10 @@ export const CadastroClientePublico = () => {
     <ClienteContainer>
       <WelcomeCard>
         <CardHeader>
-          <LogoPadaria>
-            <h1>🥖 Padaria Santa Marcelina</h1>
-            <p>Bem-vindo ao nosso cardápio digital!</p>
-          </LogoPadaria>
+          <LogoBrand>
+            <h1>{BRAND.name}</h1>
+            <p>{BRAND.tagline}</p>
+          </LogoBrand>
 
           {/* Seção de Login para Clientes Existentes */}
           <div style={{
@@ -833,7 +834,7 @@ export const CadastroClientePublico = () => {
                     >
                       Política de Privacidade
                     </a>
-                    {' '}da Padaria Santa Marcelina. *
+                    {' '}da {BRAND.legalName}. *
                   </p>
                 </div>
               </div>

@@ -61,7 +61,7 @@ if !active_services!==!total_services! (
     echo 🟢 STATUS: SISTEMA OPERACIONAL ^(!percentage!%%^)
     echo 🎯 ACAO: Sistema pronto para uso
     echo 🌐 ACESSO: http://localhost:3000
-    echo 🔐 LOGIN: admin@padaria.com / admin123
+    echo 🔐 LOGIN: admin@synvia.io / admin123
 ) else if !active_services! gtr 0 (
     echo 🟡 STATUS: SISTEMA PARCIAL ^(!percentage!%%^)
     echo 🔧 ACAO: Verificar servicos inativos

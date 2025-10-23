@@ -549,12 +549,12 @@ export const CardapioDigital = () => {
   return (
     <CardapioContainer>
       <Header>
-        <h1>🥖 Cardápio Digital</h1>
+        <h1>🥖 Experience Digital</h1>
         <div className="welcome-msg">
           Olá, <strong>{nomeCliente}</strong>! Escolha seus produtos favoritos
         </div>
         <div className="mesa-info">
-          📍 Mesa 05 - Padaria Santa Marcelina
+          📍 Mesa 05 - Synvia Experience
         </div>
       </Header>
 

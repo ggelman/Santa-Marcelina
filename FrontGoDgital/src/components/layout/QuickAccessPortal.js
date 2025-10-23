@@ -104,8 +104,8 @@ export const QuickAccessPortal = () => {
       action: () => window.open("/lgpd/portal", "_blank")
     },
     {
-      title: "Cardápio Digital",
-      description: "Menu online da padaria",
+    title: "Cardápio Digital",
+    description: "Menu digital Synvia integrado",
       icon: "📱",
       action: () => window.open("/cliente/cardapio", "_blank")
     }

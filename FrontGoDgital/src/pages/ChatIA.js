@@ -230,7 +230,7 @@ export const ChatIA = () => {
     {
       id: 1,
       type: "assistant",
-      content: "Olá! Sou o assistente inteligente da Padaria Santa Marcelina. Como posso ajudá-lo hoje? Posso fornecer informações sobre vendas, estoque, previsões de demanda e muito mais!",
+      content: "Olá! Sou o assistente inteligente da Synvia Platform. Como posso ajudá-lo hoje? Posso fornecer informações sobre vendas, estoque, previsões de demanda e muito mais!",
       timestamp: new Date()
     }
   ])
@@ -261,7 +261,7 @@ export const ChatIA = () => {
         },
         body: JSON.stringify({
           message: userMessage,
-          context: "padaria_management"
+          context: "synvia_management"
         })
       })
 
@@ -416,7 +416,7 @@ export const ChatIA = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Digite sua pergunta sobre a padaria..."
+            placeholder="Digite sua pergunta sobre a Synvia..."
             disabled={loading}
           />
           <SendButton

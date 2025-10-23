@@ -83,7 +83,7 @@ echo [ ] Frontend acessivel em http://localhost:3000
 echo [ ] Backend acessivel em https://localhost:8443  
 echo [ ] AI Service acessivel em https://localhost:5443
 echo [ ] Endpoints de seguranca respondendo
-echo [ ] Login funcionando (admin@padaria.com / admin123)
+echo [ ] Login funcionando (admin@synvia.io / admin123)
 echo [ ] Monitor de Seguranca acessivel no menu
 echo [ ] Abas funcionando (Dashboard, Alertas, Configuracoes)
 echo [ ] Metricas carregando
@@ -92,7 +92,7 @@ echo.
 
 echo 🚀 PROXIMOS PASSOS:
 echo 1. Abrir navegador em http://localhost:3000
-echo 2. Fazer login com admin@padaria.com / admin123
+echo 2. Fazer login com admin@synvia.io / admin123
 echo 3. Navegar para Monitor de Seguranca
 echo 4. Testar todas as funcionalidades manualmente
 echo 5. Verificar responsividade

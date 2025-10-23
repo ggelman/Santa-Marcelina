@@ -108,7 +108,7 @@ export const PoliticaPrivacidade = () => {
       <PoliticaCard>
         <Header>
           <h1>🛡️ Política de Privacidade</h1>
-          <p>Padaria Santa Marcelina - Proteção de Dados</p>
+          <p>{BRAND.legalName} - Política de Privacidade</p>
         </Header>
 
         <Content>
@@ -119,7 +119,7 @@ export const PoliticaPrivacidade = () => {
 
           <h2>1. Quem Somos</h2>
           <p>
-            A <strong>Padaria Santa Marcelina</strong> é comprometida com a proteção 
+            A <strong>{BRAND.legalName}</strong> é comprometida com a proteção 
             da privacidade e segurança dos dados pessoais dos nossos clientes.
           </p>
 
@@ -170,14 +170,14 @@ export const PoliticaPrivacidade = () => {
           </ul>
 
           <div className="contact-info">
-            <h2>📞 Contato</h2>
+            <h2>Contato</h2>
             <p><strong>Encarregado de Dados (DPO)</strong></p>
-            <p>📧 lgpd@padariasantamarcelina.com.br</p>
-            <p>📱 (11) 3456-7891</p>
-            <p>🕒 Atendimento: Segunda a Sexta, 8h às 18h</p>
+            <p>Email: {BRAND.lgpdEmail}</p>
+            <p>Telefone: (11) 3456-7891</p>
+            <p>Atendimento: Segunda a sexta, 8h às 18h</p>
             
             <div style={{marginTop: '20px', padding: '15px', background: '#e7f3ff', borderRadius: '6px'}}>
-              <strong>🌐 Portal LGPD:</strong> 
+              <strong>Portal LGPD:</strong>
               <a href="/lgpd/portal" style={{color: '#007bff', textDecoration: 'underline', marginLeft: '10px'}}>
                 Exercer direitos de proteção de dados
               </a>

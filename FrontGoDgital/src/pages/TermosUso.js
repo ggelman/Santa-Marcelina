@@ -108,7 +108,7 @@ export const TermosUso = () => {
       <TermosCard>
         <Header>
           <h1>🥖 Termos de Uso</h1>
-          <p>Padaria Santa Marcelina - Cardápio Digital</p>
+          <p>{BRAND.legalName} - Termos de Uso</p>
         </Header>
 
         <Content>
@@ -119,7 +119,7 @@ export const TermosUso = () => {
 
           <h2>1. Aceitação dos Termos</h2>
           <p>
-            Ao acessar e usar o cardápio digital da Padaria Santa Marcelina através do QR Code, 
+            Ao acessar e usar o cardápio digital da {BRAND.legalName} através do QR Code, 
             você concorda em ficar vinculado a estes Termos de Uso. Se você não concordar com 
             qualquer parte destes termos, não deve usar nosso serviço.
           </p>
@@ -129,7 +129,7 @@ export const TermosUso = () => {
             O cardápio digital é uma plataforma que permite aos clientes:
           </p>
           <ul>
-            <li>Visualizar produtos disponíveis na padaria</li>
+            <li>Visualizar produtos disponíveis na plataforma</li>
             <li>Acessar informações detalhadas sobre produtos</li>
             <li>Registrar preferências pessoais (mediante consentimento)</li>
             <li>Exercer direitos relacionados à proteção de dados (LGPD)</li>
@@ -184,13 +184,13 @@ export const TermosUso = () => {
           <h2>6. Propriedade Intelectual</h2>
           <p>
             Todos os conteúdos do cardápio digital, incluindo textos, imagens, design e 
-            funcionalidades, são propriedade da Padaria Santa Marcelina e estão protegidos 
+            funcionalidades, são propriedade da {BRAND.legalName} e estão protegidos 
             por leis de propriedade intelectual.
           </p>
 
           <h2>7. Limitação de Responsabilidade</h2>
           <p>
-            A Padaria Santa Marcelina não se responsabiliza por:
+            A {BRAND.legalName} não se responsabiliza por:
           </p>
           <ul>
             <li>Interrupções temporárias do serviço</li>
@@ -208,7 +208,7 @@ export const TermosUso = () => {
           <h2>9. Cancelamento e Exclusão</h2>
           <p>
             Você pode solicitar a exclusão dos seus dados a qualquer momento através do 
-            portal LGPD. A Padaria Santa Marcelina também se reserva o direito de 
+            portal LGPD. A {BRAND.legalName} também se reserva o direito de 
             suspender contas que violem estes termos.
           </p>
 
@@ -224,15 +224,15 @@ export const TermosUso = () => {
 
           <div className="contact-info">
             <h2>📞 Contato e Suporte</h2>
-            <p><strong>Padaria Santa Marcelina</strong></p>
-            <p>📧 Email: contato@padariasantamarcelina.com.br</p>
+            <p><strong>{BRAND.legalName}</strong></p>
+            <p>📧 Email: contato@plataformasantamarcelina.com.br</p>
             <p>📱 Telefone: (11) 3456-7890</p>
             <p>🏢 Endereço: Rua das Delícias, 123 - São Paulo, SP</p>
             <p>🕒 Horário de Atendimento: Segunda a Sexta, 8h às 18h</p>
             
             <div style={{marginTop: '20px', padding: '15px', background: '#e7f3ff', borderRadius: '6px'}}>
               <strong>🛡️ Encarregado de Dados (DPO)</strong><br/>
-              Email: lgpd@padariasantamarcelina.com.br<br/>
+              Email: lgpd@plataformasantamarcelina.com.br<br/>
               Para exercer seus direitos LGPD e proteção de dados
             </div>
           </div>

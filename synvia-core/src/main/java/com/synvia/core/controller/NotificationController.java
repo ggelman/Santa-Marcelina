@@ -25,8 +25,8 @@ public class NotificationController {
                 "systemAlerts", true);
 
         List<Map<String, String>> emailList = List.of(
-                Map.of("id", "1", "email", "admin.backend@padaria.com", "role", "Administrador"),
-                Map.of("id", "2", "email", "gerente.backend@padaria.com", "role", "Gerente"));
+                Map.of("id", "1", "email", "admin.platform@synvia.io", "role", "Administrador"),
+                Map.of("id", "2", "email", "operacoes@synvia.io", "role", "Operações"));
 
         Map<String, Object> response = Map.of(
                 "settings", settings,

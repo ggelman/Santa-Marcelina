@@ -1,7 +1,29 @@
 import { createGlobalStyle, ThemeProvider } from "styled-components"
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types"
+
+import { synviaTheme } from "./theme"
 
 export const GlobalStyles = createGlobalStyle`
+  :root {
+    --synvia-space-cadet: ${synviaTheme.colors.spaceCadet};
+    --synvia-snow: ${synviaTheme.colors.snow};
+    --synvia-steel-blue: ${synviaTheme.colors.steelBlue};
+    --synvia-asparagus: ${synviaTheme.colors.asparagus};
+    --synvia-smoky-black: ${synviaTheme.colors.smokyBlack};
+    --synvia-graphite: ${synviaTheme.colors.graphiteGray};
+    --synvia-background: ${synviaTheme.colors.background};
+    --synvia-surface: ${synviaTheme.colors.surface};
+    --synvia-surface-alt: ${synviaTheme.colors.surfaceAlt};
+    --synvia-text-primary: ${synviaTheme.colors.textPrimary};
+    --synvia-text-secondary: ${synviaTheme.colors.textSecondary};
+    --synvia-text-muted: ${synviaTheme.colors.textMuted};
+    --synvia-accent-primary: ${synviaTheme.colors.accentPrimary};
+    --synvia-accent-secondary: ${synviaTheme.colors.accentSecondary};
+    --synvia-border: ${synviaTheme.colors.border};
+    --synvia-shadow-soft: ${synviaTheme.colors.shadowSoft};
+    --synvia-focus-ring: ${synviaTheme.colors.focusRing};
+  }
+
   * {
     margin: 0;
     padding: 0;
@@ -9,13 +31,11 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: ${synviaTheme.typography.primary};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #FDFBF7;
-    color: #3D2C21;
+    background: var(--synvia-background);
+    color: var(--synvia-text-primary);
     line-height: 1.6;
     overflow-y: scroll;
   }
@@ -43,7 +63,7 @@ export const GlobalStyles = createGlobalStyle`
     max-width: 100%;
     height: auto;
   }
-  /* Animações para alertas de segurança */
+
   @keyframes slide-in {
     from {
       transform: translateX(100%);
@@ -74,7 +94,6 @@ export const GlobalStyles = createGlobalStyle`
     animation: slide-out 0.3s ease-in;
   }
 
-  /* Estilos para componentes de segurança */
   .security-alert-critical {
     border-left: 4px solid #ef4444;
   }
@@ -84,10 +103,9 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   .security-alert-info {
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid var(--synvia-accent-primary);
   }
 
-  /* Indicadores de status */
   .status-indicator {
     position: relative;
   }
@@ -104,7 +122,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   .status-healthy::before {
-    background-color: #10b981;
+    background-color: var(--synvia-accent-secondary);
   }
 
   .status-warning::before {
@@ -116,63 +134,13 @@ export const GlobalStyles = createGlobalStyle`
   }
 `
 
-export const theme = {
-  colors: {
-    // Cores principais da Padaria Santa Marcelina
-    primary: "#B8860B", // Dourado da logo
-    primaryDark: "#9A7209",
-    primaryLight: "#D4A017",
-
-    // Cores de fundo
-    background: "#FDFBF7",
-    white: "#FFFFFF",
-    lightGray: "#F8F9FA",
-    border: "#E9ECEF",
-
-    // Cores de texto
-    textPrimary: "#3D2C21",
-    textSecondary: "#6C757D",
-    textLight: "#ADB5BD",
-
-    // Cores de status
-    success: "#28A745",
-    danger: "#DC3545",
-    warning: "#FFC107",
-    info: "#17A2B8",
-
-    // Cores específicas da padaria
-    wheat: "#F5DEB3",
-    brown: "#8B4513",
-    cream: "#FFFDD0",
-  },
-
-  breakpoints: {
-    mobile: "768px",
-    tablet: "1024px",
-    desktop: "1200px",
-  },
-
-  shadows: {
-    small: "0 2px 4px rgba(0,0,0,0.1)",
-    medium: "0 4px 8px rgba(0,0,0,0.15)",
-    large: "0 8px 16px rgba(0,0,0,0.2)",
-  },
-
-  borderRadius: {
-    small: "4px",
-    medium: "8px",
-    large: "12px",
-    round: "50%",
-  },
-}
-
 export const ThemeWrapper = ({ children }) => (
-  <ThemeProvider theme={theme}>
+  <ThemeProvider theme={synviaTheme}>
     <GlobalStyles />
     {children}
   </ThemeProvider>
 )
 
 ThemeWrapper.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 }

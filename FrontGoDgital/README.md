@@ -95,7 +95,7 @@ npm start
 A aplicação estará acessível em `http://localhost:3000`.
 
 ### 🔐 Credenciais de Teste
--   **Email:** `admin@padaria.com`
+-   **Email:** `admin@synvia.io`
 -   **Senha:** `admin123` 
 
 ## 🔮 Próximos Passos (Roadmap Futuro)

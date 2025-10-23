@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { BRAND } from '../config/branding';
 import { FiSquare, FiUsers, FiShoppingBag, FiCreditCard, FiShield, FiArrowRight } from 'react-icons/fi';
 
 // Estilos Principais
 const AcessoContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--synvia-space-cadet) 0%, var(--synvia-steel-blue) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,11 +24,11 @@ const AcessoCard = styled.div`
   text-align: center;
 `;
 
-const LogoPadaria = styled.div`
+const LogoBrand = styled.div`
   margin-bottom: 30px;
   
   h1 {
-    color: #2c3e50;
+    color: var(--synvia-space-cadet);
     font-size: 2.5rem;
     font-weight: 700;
     margin: 0;
@@ -35,7 +36,7 @@ const LogoPadaria = styled.div`
   }
   
   p {
-    color: #7f8c8d;
+    color: var(--synvia-text-muted);
     font-size: 1rem;
     margin: 0;
   }
@@ -45,13 +46,13 @@ const BemVindo = styled.div`
   margin-bottom: 40px;
   
   h2 {
-    color: #2c3e50;
+    color: var(--synvia-space-cadet);
     font-size: 1.8rem;
     margin-bottom: 12px;
   }
   
   p {
-    color: #7f8c8d;
+    color: var(--synvia-text-muted);
     font-size: 1.1rem;
     line-height: 1.6;
   }
@@ -114,14 +115,14 @@ const OpcaoItem = styled.button`
     margin: 0 16px;
     
     h3 {
-      color: #2c3e50;
+      color: var(--synvia-space-cadet);
       font-size: 1.1rem;
       font-weight: 600;
       margin: 0 0 4px 0;
     }
     
     p {
-      color: #7f8c8d;
+      color: var(--synvia-text-muted);
       font-size: 0.9rem;
       margin: 0;
     }
@@ -161,7 +162,7 @@ const DisclaimerLGPD = styled.div`
   text-align: left;
   
   .titulo {
-    color: #2c3e50;
+    color: var(--synvia-space-cadet);
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 8px;
@@ -171,7 +172,7 @@ const DisclaimerLGPD = styled.div`
   }
   
   .texto {
-    color: #7f8c8d;
+    color: var(--synvia-text-muted);
     font-size: 0.8rem;
     line-height: 1.5;
   }
@@ -222,10 +223,10 @@ const AcessoQRCode = () => {
   return (
     <AcessoContainer>
       <AcessoCard>
-        <LogoPadaria>
-          <h1>🥖 Santa Marcelina</h1>
-          <p>Panificadora & Confeitaria</p>
-        </LogoPadaria>
+        <LogoBrand>
+          <h1>{BRAND.name}</h1>
+          <p>{BRAND.tagline}</p>
+        </LogoBrand>
 
         <QRIcon>
           <FiSquare />

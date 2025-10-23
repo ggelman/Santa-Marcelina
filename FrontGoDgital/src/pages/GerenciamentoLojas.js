@@ -391,7 +391,7 @@ export const GerenciamentoLojas = () => {
               value={formData.nome}
               onChange={handleChange}
               required
-              placeholder="Ex: Padaria Santa Marcelina - Centro"
+              placeholder={Ex:  - Unidade Centro}
             />
 
             <Input
@@ -417,7 +417,7 @@ export const GerenciamentoLojas = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="loja@padaria.com"
+              placeholder="loja@synvia.io"
             />
 
             <Input

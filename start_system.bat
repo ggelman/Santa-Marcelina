@@ -3,15 +3,15 @@ setlocal enabledelayedexpansion
 
 echo.
 echo ==========================================
-echo    🚀 PADARIA SANTA MARCELINA 
-echo    ⚡ INICIALIZACAO ULTRA RAPIDA
+echo    SYNVIA PLATFORM
+echo    ORQUESTRACAO ULTRA RAPIDA
 echo ==========================================
 echo.
 
-REM Verificar se está no diretório correto
+REM Verificar se esta no diretorio correto
 if not exist "ai_module" (
-    echo ❌ ERRO: Execute este script na pasta SRC
-    echo 💡 Caminho correto: C:\projects\FIAP\
+    echo [ERRO] Execute este script na pasta SRC
+    echo Caminho correto: C:\projects\FIAP\
     pause
     exit /b 1
 )
@@ -84,7 +84,7 @@ if !services_ok!==3 (
     echo ==========================================
     echo.
     echo 🌐 ACESSO PRINCIPAL: http://localhost:3000
-    echo 🔐 LOGIN: admin@padaria.com / admin123
+        echo LOGIN: admin@synvia.io / admin123
     echo.
     echo 📊 APIs Disponiveis:
     echo   • Backend: https://localhost:8443/api

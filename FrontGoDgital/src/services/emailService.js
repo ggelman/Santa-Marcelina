@@ -16,7 +16,7 @@ class EmailService {
   async sendEmail(to, subject, html, attachments = []) {
     try {
       const mailOptions = {
-        from: `"goDigital Code!" <${process.env.SMTP_USER}>`,
+        from: `"Synvia Platform" <${process.env.SMTP_USER}>`,
         to,
         subject,
         html,
@@ -36,7 +36,7 @@ class EmailService {
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A7C59; color: white; padding: 20px; text-align: center;">
-          <h1>🥖 goDigital Code!</h1>
+          <h1>🥖 Synvia Platform</h1>
           <h2>Alerta de Estoque Baixo</h2>
         </div>
         
@@ -85,14 +85,14 @@ class EmailService {
             <strong>Recomendação:</strong> Realize a reposição destes produtos o mais breve possível para evitar rupturas de estoque.
           </p>
           <p style="margin: 10px 0 0 0; color: #6c757d; font-size: 12px;">
-            Este é um email automático do sistema goDigital Code! - Padaria Santa Marcelina
+            Este é um email automático do sistema Synvia Platform - Synvia Platform
           </p>
         </div>
       </div>
     `
 
     for (const recipient of recipients) {
-      await this.sendEmail(recipient, "🚨 Alerta de Estoque Baixo - Padaria Santa Marcelina", html)
+      await this.sendEmail(recipient, "🚨 Alerta de Estoque Baixo - Synvia Platform", html)
     }
   }
 
@@ -100,7 +100,7 @@ class EmailService {
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A7C59; color: white; padding: 20px; text-align: center;">
-          <h1>🥖 goDigital Code!</h1>
+          <h1>🥖 Synvia Platform</h1>
           <h2>Relatório Diário de Vendas</h2>
           <p style="margin: 0;">${new Date().toLocaleDateString("pt-BR")}</p>
         </div>
@@ -160,7 +160,7 @@ class EmailService {
 
         <div style="padding: 20px; background-color: #f8f9fa; text-align: center;">
           <p style="margin: 0; color: #6c757d; font-size: 12px;">
-            Relatório gerado automaticamente pelo sistema goDigital Code! - Padaria Santa Marcelina
+            Relatório gerado automaticamente pelo sistema Synvia Platform - Synvia Platform
           </p>
         </div>
       </div>
@@ -175,7 +175,7 @@ class EmailService {
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A7C59; color: white; padding: 20px; text-align: center;">
-          <h1>🥖 goDigital Code!</h1>
+          <h1>🥖 Synvia Platform</h1>
           <h2>Backup Realizado com Sucesso</h2>
         </div>
 
@@ -213,14 +213,14 @@ class EmailService {
             <strong>Importante:</strong> Mantenha seus backups em local seguro e teste a restauração periodicamente.
           </p>
           <p style="margin: 10px 0 0 0; color: #6c757d; font-size: 12px;">
-            Este é um email automático do sistema goDigital Code! - Padaria Santa Marcelina
+            Este é um email automático do sistema Synvia Platform - Synvia Platform
           </p>
         </div>
       </div>
     `
 
     for (const recipient of recipients) {
-      await this.sendEmail(recipient, "✅ Backup Realizado com Sucesso - goDigital Code!", html)
+      await this.sendEmail(recipient, "✅ Backup Realizado com Sucesso - Synvia Platform", html)
     }
   }
 
@@ -228,7 +228,7 @@ class EmailService {
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A7C59; color: white; padding: 20px; text-align: center;">
-          <h1>🥖 goDigital Code!</h1>
+          <h1>🥖 Synvia Platform</h1>
           <h2>Novo Usuário Cadastrado</h2>
         </div>
 
@@ -256,14 +256,14 @@ class EmailService {
 
         <div style="padding: 20px; background-color: #f8f9fa; text-align: center;">
           <p style="margin: 0; color: #6c757d; font-size: 12px;">
-            Notificação automática do sistema goDigital Code! - Padaria Santa Marcelina
+            Notificação automática do sistema Synvia Platform - Synvia Platform
           </p>
         </div>
       </div>
     `
 
     for (const recipient of recipients) {
-      await this.sendEmail(recipient, "👤 Novo Usuário Cadastrado - goDigital Code!", html)
+      await this.sendEmail(recipient, "👤 Novo Usuário Cadastrado - Synvia Platform", html)
     }
   }
 }

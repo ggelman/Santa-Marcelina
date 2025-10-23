@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { BRAND } from "../../config/branding"
 import { useAuth } from "../../context/AuthContext"
 import { usePermissions } from "../../hooks/usePermissions"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -33,7 +34,7 @@ const Logo = styled.div`
   }
   
   h3 {
-    color: #B8860B;
+    color: var(--synvia-accent-primary);
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 5px;
@@ -64,7 +65,7 @@ const NavItem = styled.div`
     font-weight: 500;
     
     &:hover, &.active {
-      background-color: #B8860B;
+      background-color: var(--synvia-accent-primary);
       color: white;
     }
   }
@@ -97,7 +98,7 @@ const UserInfo = styled.div`
 `
 
 const UserProfile = styled.span`
-  background-color: #B8860B;
+  background-color: var(--synvia-accent-primary);
   color: white;
   padding: 4px 8px;
   border-radius: 12px;
@@ -200,31 +201,31 @@ export const MainLayout = ({ children }) => {
       <Sidebar>
         <Logo>
           <img 
-            src="/images/logo-santa-marcelina.png"
-            alt="Logo Padaria Santa Marcelina"
+            src="/assets/synvia-logo.svg"
+            alt="Logo Synvia"
             onError={(e) => {
-              e.target.style.display = "none"
-              e.target.nextSibling.style.display = "flex"
+              e.target.onerror = null
+              e.target.src = "/images/logoSynvia-Photoroom.png"
             }}
           />
           <div
             style={{
               width: "80px",
               height: "80px",
-              backgroundColor: "#B8860B",
+              backgroundColor: "var(--synvia-accent-primary)",
               borderRadius: "50%",
               margin: "0 auto 15px",
               display: "none",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "32px",
-              color: "white",
+              color: "var(--synvia-snow)",
             }}
           >
-            🥖
+            S
           </div>
-          <h3>Padaria Santa Marcelina</h3>
-          <p>Desde 1978</p>
+          <h3>{BRAND.name}</h3>
+          <p>{BRAND.tagline}</p>
         </Logo>
 
         <NavMenu>
@@ -245,7 +246,7 @@ export const MainLayout = ({ children }) => {
                 {item.badge > 0 && (
                   <span style={{
                     backgroundColor: "#dc3545",
-                    color: "white",
+                    color: "var(--synvia-snow)",
                     borderRadius: "12px",
                     padding: "2px 8px",
                     fontSize: "12px",

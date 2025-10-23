@@ -5,13 +5,14 @@ import { useAuth } from "../context/AuthContext"
 import { Button } from "../components/Button"
 import { Input } from "../components/Input"
 import { Card } from "../components/Card"
+import { BRAND } from "../config/branding"
 
 const LoginContainer = styled.div`
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #FDFBF7 0%, #F5F1E8 100%);
+  background: linear-gradient(135deg, var(--synvia-background) 0%, var(--synvia-surface-alt) 100%);
   padding: 20px;
 `
 
@@ -33,14 +34,14 @@ const Logo = styled.div`
   }
   
   h1 {
-    color: #B8860B;
+    color: var(--synvia-accent-primary);
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 8px;
   }
   
   p {
-    color: #666;
+    color: var(--synvia-text-muted);
     font-size: 14px;
     font-style: italic;
   }
@@ -65,12 +66,12 @@ const ErrorMessage = styled.div`
 const CredentialsInfo = styled.div`
   margin-top: 30px;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: var(--synvia-surface-alt);
   border-radius: 8px;
-  border-left: 4px solid #B8860B;
+  border-left: 4px solid var(--synvia-accent-primary);
   
   h4 {
-    color: #B8860B;
+    color: var(--synvia-accent-primary);
     margin-bottom: 15px;
     font-size: 16px;
   }
@@ -80,11 +81,11 @@ const CredentialsInfo = styled.div`
     font-size: 14px;
     
     strong {
-      color: #333;
+      color: var(--synvia-text-primary);
     }
     
     span {
-      color: #666;
+      color: var(--synvia-text-muted);
       font-family: monospace;
     }
   }
@@ -159,31 +160,31 @@ export const Login = () => {
       <LoginCard>
         <Logo>
           <img
-            src="/images/logo-santa-marcelina.png"
-            alt="Logo Padaria Santa Marcelina"
+            src="/assets/synvia-logo.svg"
+            alt="Logo Synvia"
             onError={(e) => {
-              e.target.style.display = "none"
-              e.target.nextSibling.style.display = "flex"
+              e.target.onerror = null
+              e.target.src = "/images/logoSynvia-Photoroom.png"
             }}
           />
           <div
             style={{
               width: "100px",
               height: "100px",
-              backgroundColor: "#B8860B",
+              backgroundColor: "var(--synvia-accent-primary)",
               borderRadius: "50%",
               margin: "0 auto 20px",
               display: "none",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "40px",
-              color: "white",
+              color: "var(--synvia-snow)",
             }}
           >
-            🥖
+            S
           </div>
-          <h1>Padaria Santa Marcelina</h1>
-          <p>Sistema de Gestão - Desde 1978</p>
+          <h1>Synvia Platform</h1>
+          <p>Ecossistema modular de dados e operações</p>
         </Logo>
 
         <Form onSubmit={handleSubmit}>
@@ -210,7 +211,7 @@ export const Login = () => {
             />
           )}
 
-          <Button type="submit" disabled={carregando} style={{ backgroundColor: "#B8860B" }}>
+          <Button type="submit" disabled={carregando} style={{ backgroundColor: "var(--synvia-accent-primary)" }}>
             {carregando ? "Validando..." : mfaStep === "password" ? "Entrar" : "Confirmar"}
           </Button>
         </Form>
@@ -219,8 +220,8 @@ export const Login = () => {
 
         {mfaStep === "setup" && (
           <div style={{ marginTop: "20px" }}>
-            <h4 style={{ color: "#B8860B", marginBottom: "10px" }}>Ative o Autenticador</h4>
-            <p style={{ fontSize: "14px", color: "#555", marginBottom: "10px" }}>
+            <h4 style={{ color: "var(--synvia-accent-primary)", marginBottom: "10px" }}>Ative o Autenticador</h4>
+            <p style={{ fontSize: "14px", color: "var(--synvia-text-secondary)", marginBottom: "10px" }}>
               Escaneie o QR Code abaixo no aplicativo de autenticação ou insira o código manualmente.
             </p>
             {qrCodeUrl && (
@@ -230,17 +231,17 @@ export const Login = () => {
                 style={{ margin: "10px auto", display: "block", border: "1px solid #eee", borderRadius: "8px", padding: "8px", background: "white" }}
               />
             )}
-            <p style={{ fontFamily: "monospace", fontSize: "16px", letterSpacing: "2px", color: "#333" }}>{mfaSecret}</p>
-            <p style={{ fontSize: "13px", color: "#777" }}>Após cadastrar, informe o código de 6 dígitos no campo acima.</p>
+            <p style={{ fontFamily: "monospace", fontSize: "16px", letterSpacing: "2px", color: "var(--synvia-text-primary)" }}>{mfaSecret}</p>
+            <p style={{ fontSize: "13px", color: "var(--synvia-text-muted)" }}>Após cadastrar, informe o código de 6 dígitos no campo acima.</p>
           </div>
         )}
 
         <CredentialsInfo>
-          <h4>🔐 Credenciais para Teste</h4>
+          <h4>🔐 Credenciais para demonstração</h4>
           <div>
-            <strong>Admin:</strong> <span>admin@padaria.com</span> / <span>admin123</span>
+            <strong>Admin:</strong> <span>admin@synvia.io</span> / <span>admin123</span>
             <br />
-            <small style={{ color: "#777" }}>Será solicitado um código MFA após o login.</small>
+            <small style={{ color: "var(--synvia-text-muted)" }}>Será solicitado um código MFA após o login.</small>
           </div>
         </CredentialsInfo>
       </LoginCard>

@@ -1,4 +1,4 @@
-# 🛡️ Rate Limiting e DDoS Protection - Sistema GoDigital Padaria
+# 🛡️ Rate Limiting e DDoS Protection - Synvia Platform
 
 **Data:** 01/10/2025  
 **Versão:** 1.0.0  

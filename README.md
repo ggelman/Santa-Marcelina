@@ -3,7 +3,7 @@
 Synvia é o ecossistema modular que transforma operações complexas em experiências claras. O monorepo integra fronteira de design e engenharia: um frontend React responsivo, o núcleo Spring Boot de orquestração operacional e o serviço de inteligência em Flask que traduz dados brutos em decisões. Cada módulo se adapta a diferentes verticais — varejo, serviços, saúde, educação — preservando a fluidez da marca.
 
 > **Estado atual:** Synvia Front 85 % • Synvia Core API 85 % • Synvia Intelligence 80 % • Infra/DevSecOps 70 %  
-> **Última revisão:** dezembro/2025
+> **Última revisão:** outubro/2025
 
 ---
 
@@ -68,7 +68,7 @@ Synvia Front (React)  -->  Synvia Core API (Spring Boot)  -->  Synvia Intelligen
 ## Estrutura do repositório
 ```
 FrontGoDgital/          # Synvia Front (React)
-synvia-core/             # Synvia Core API (Spring Boot)
+synvia-core/            # Synvia Core API (Spring Boot)
 ai_module/              # Synvia Intelligence (Flask/ML)
 llm-gateway/            # Gateway experimental para orquestração LLM
 docs/                   # Documentação oficial

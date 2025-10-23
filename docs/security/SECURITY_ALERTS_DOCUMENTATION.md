@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-O **Sistema de Alertas de Segurança em Tempo Real** foi implementado para fornecer visibilidade imediata sobre eventos de segurança, rate limiting e proteção DDoS no GoDigital Padaria. Este sistema complementa a infraestrutura de segurança backend com uma interface frontend robusta e alertas em tempo real.
+O **Sistema de Alertas de Segurança em Tempo Real** foi implementado para fornecer visibilidade imediata sobre eventos de segurança, rate limiting e proteção DDoS no Synvia Platform. Este sistema complementa a infraestrutura de segurança backend com uma interface frontend robusta e alertas em tempo real.
 
 > Público-alvo: Administradores, Gerentes de TI e desenvolvedores com acesso ao painel.
 
