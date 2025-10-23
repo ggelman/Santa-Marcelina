@@ -1,37 +1,38 @@
-# ⚡ Início Rápido (≤ 5 minutos)
+﻿# âš¡ InÃ­cio RÃ¡pido (â‰¤ 5 minutos)
 
-Guia objetivo para subir o Synvia localmente. Ideal para demonstrações ou validações rápidas após um clone do repositório.
+Guia objetivo para subir o Synvia localmente. Ideal para demonstraÃ§Ãµes ou validaÃ§Ãµes rÃ¡pidas apÃ³s um clone do repositÃ³rio.
 
 ---
 
-## ✅ Pré-requisitos mínimos
+## âœ… PrÃ©-requisitos mÃ­nimos
 - Java 17+ com Maven configurado no `PATH`.
 - Node.js 18+ com `npm`.
 - Python 3.10+.
-- Certificados SSL já presentes em `ssl_certificates/` (incluídos no repositório).
+- Certificados SSL jÃ¡ presentes em `ssl_certificates/` (incluÃ­dos no repositÃ³rio).
 
 ---
 
-## 🚀 Execução automatizada (Windows)
-1. Abra um **PowerShell** na raiz do repositório.
+## ðŸš€ ExecuÃ§Ã£o automatizada (Windows)
+1. Abra um **PowerShell** na raiz do repositÃ³rio.
 2. Execute:
    ```powershell
    .\start_system.bat
    ```
-3. Aguarde a inicialização (≈ 2 minutos). O script inicia backend, frontend e módulo de IA.
+   > Execute em PowerShell ou Prompt de Comando (evite Git Bash) para que os utilitários nativos do Windows funcionem corretamente.
+3. Aguarde a inicializaÃ§Ã£o (â‰ˆ 2 minutos). O script inicia backend, frontend e mÃ³dulo de IA.
 4. Acesse o frontend em `http://localhost:3000`.
 
-Para encerrar todos os serviços use:
+Para encerrar todos os serviÃ§os use:
 ```powershell
 .\stop_system.bat
 ```
 
 ---
 
-## 🧭 Execução manual (Linux/macOS/Windows)
-Em três terminais separados, execute os comandos abaixo a partir da raiz do projeto.
+## ðŸ§­ ExecuÃ§Ã£o manual (Linux/macOS/Windows)
+Em trÃªs terminais separados, execute os comandos abaixo a partir da raiz do projeto.
 
-### 1. Módulo de IA (porta 5001 HTTP)
+### 1. MÃ³dulo de IA (porta 5001 HTTP)
 ```bash
 cd ai_module
 python -m venv .venv && source .venv/bin/activate  # opcional
@@ -40,7 +41,7 @@ pip install -r requirements.txt
 export USE_HTTPS=false  # PowerShell: $env:USE_HTTPS="false"
 python ai_service.py
 ```
-> Para executar em HTTPS defina `USE_HTTPS=true`, utilize os certificados de `../ssl_certificates` e a porta passará a ser `5443`.
+> Para executar em HTTPS defina `USE_HTTPS=true`, utilize os certificados de `../ssl_certificates` e a porta passarÃ¡ a ser `5443`.
 
 ### 2. Backend Spring Boot (porta 8080)
 ```bash
@@ -57,7 +58,7 @@ npm start
 
 ---
 
-## 🔍 Verificações rápidas
+## ðŸ” VerificaÃ§Ãµes rÃ¡pidas
 - **Frontend:** `http://localhost:3000` deve exibir a tela de login.
 - **Backend:** `http://localhost:8080/actuator/health` retorna `{"status":"UP"}`.
 - **IA:** `http://localhost:5001/health` retorna `{"status":"ok"}`. Para HTTPS utilize `https://localhost:5443/health`.
@@ -66,31 +67,34 @@ Use `system_status.bat` (Windows) ou `ps`/`lsof -i` (Linux/macOS) para confirmar
 
 ---
 
-## ✅ Validação expressa pós-start
+## âœ… ValidaÃ§Ã£o expressa pÃ³s-start
 ```bash
-pytest -q                      # Testes rápidos do módulo de IA
+pytest -q                      # Testes rÃ¡pidos do mÃ³dulo de IA
 mvn clean verify               # Backend com build + testes
 npm run lint && npm test       # Qualidade e testes do frontend
 ```
 
-> Para execução integrada (IA + backend + frontend) utilize `docker compose up -d` com chaves LLM de sandbox configuradas.
+> Para execuÃ§Ã£o integrada (IA + backend + frontend) utilize `docker compose up -d` com chaves LLM de sandbox configuradas.
 
 ---
 
-## 🛠️ Problemas frequentes
-| Sintoma | Ação recomendada |
+## ðŸ› ï¸ Problemas frequentes
+| Sintoma | AÃ§Ã£o recomendada |
 | --- | --- |
 | Porta em uso | Finalize processos anteriores (`stop_system.bat` ou `lsof -ti:3000 -sTCP:LISTEN`). |
-| Erro de dependência Node | Execute `npm install --legacy-peer-deps` e repita `npm start`. |
-| Maven não encontra o JDK | Garanta `JAVA_HOME` apontando para uma instalação Java 17+. |
+| Erro de dependÃªncia Node | Execute `npm install --legacy-peer-deps` e repita `npm start`. |
+| Maven nÃ£o encontra o JDK | Garanta `JAVA_HOME` apontando para uma instalaÃ§Ã£o Java 17+. |
 | AI Service falha ao iniciar | Verifique certificados em `ssl_certificates/` ou execute com `USE_HTTPS=false`. |
 
 ---
 
-## 📎 Próximos passos
-- Consulte o [guia completo de execução](GUIA_EXECUCAO_COMPLETO.md) para detalhes de certificados, perfis HTTPS e testes.
-- Acompanhe o estado do projeto e o plano evolutivo no [roadmap estratégico](../ROADMAP_TRANSFORMACAO_DIGITAL.md).
+## ðŸ“Ž PrÃ³ximos passos
+- Consulte o [guia completo de execuÃ§Ã£o](GUIA_EXECUCAO_COMPLETO.md) para detalhes de certificados, perfis HTTPS e testes.
+- Acompanhe o estado do projeto e o plano evolutivo no [roadmap estratÃ©gico](../roadmap/ROADMAP_SYNVIA.md).
 
-> Tempo médio para o primeiro acesso: **≈ 5 minutos**
+> Tempo mÃ©dio para o primeiro acesso: **â‰ˆ 5 minutos**
 >
-> Última atualização: outubro/2025
+> Ãšltima atualizaÃ§Ã£o: outubro/2025
+
+
+
