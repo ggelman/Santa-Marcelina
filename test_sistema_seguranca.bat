@@ -1,62 +1,41 @@
-@echo off
+﻿@echo off
+setlocal enabledelayedexpansion
+goto :main
+
+:check_port
+netstat -an | findstr ":%~1" >nul
+if %errorlevel%==0 (
+    echo   OK: %~2 ativo (%~3)
+) else (
+    echo   FALHA: %~2 nao encontrado na porta %~1
+)
+exit /b 0
+
+:curl_test
+powershell -NoLogo -NoProfile -Command "try {  = Invoke-WebRequest -Uri '%~2' -TimeoutSec 5 -UseBasicParsing; Write-Host '   %~1 OK (HTTP' .StatusCode')' } catch { Write-Host '   %~1 inacessível' }" 2>nul
+exit /b 0
+
+:main
 echo ==========================================
-echo    TESTE AUTOMATIZADO - SYNVIA PLATFORM
+echo    TESTE RAPIDO - SYNVIA PLATFORM
 echo ==========================================
 echo.
 
-echo [INFO] Verificando serviços ativos (HTTP)...
-echo.
+echo [INFO] Verificando portas (3000 / 8080 / 5001)...
+call :check_port 3000 "Frontend" "http://localhost:3000"
+call :check_port 8080 "Backend" "http://localhost:8080"
+call :check_port 5001 "AI Service" "http://localhost:5001"
 
-REM Frontend
-echo [1/3] Frontend (porta 3000)...
-netstat -an | findstr ":3000" >nul
-if %errorlevel%==0 (
-    echo   OK: Frontend ativo em http://localhost:3000
-) else (
-    echo   FALHA: Frontend nao encontrado
-    echo   Ação: cd FrontGoDgital && npm start
-)
 echo.
-
-REM Backend
-echo [2/3] Backend (porta 8080)...
-netstat -an | findstr ":8080" >nul
-if %errorlevel%==0 (
-    echo   OK: Backend ativo em http://localhost:8080
-) else (
-    echo   FALHA: Backend nao encontrado
-    echo   Ação: cd synvia-core && mvn spring-boot:run
-)
-echo.
-
-REM AI Service
-echo [3/3] AI Service (porta 5001)...
-netstat -an | findstr ":5001" >nul
-if %errorlevel%==0 (
-    echo   OK: AI Service ativo em http://localhost:5001
-) else (
-    echo   FALHA: AI Service nao encontrado
-    echo   Ação: cd ai_module && set USE_HTTPS=false && python ai_service.py
-)
-echo.
-
 echo ==========================================
 echo         TESTES DE CONECTIVIDADE
 echo ==========================================
-echo.
 
-echo [TESTE] Frontend...
-powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:3000' -TimeoutSec 5 -UseBasicParsing; if($response.StatusCode -eq 200) { Write-Host '   Frontend OK (HTTP 200)' } else { Write-Host '   Frontend respondeu com status:' $response.StatusCode } } catch { Write-Host '   Frontend inacessível' }"
-echo.
+call :curl_test "Frontend" "http://localhost:3000"
+call :curl_test "Backend /actuator/health" "http://localhost:8080/actuator/health"
+call :curl_test "AI Service /health" "http://localhost:5001/health"
 
-echo [TESTE] Backend /actuator/health...
-powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:8080/actuator/health' -TimeoutSec 5 -UseBasicParsing; if($response.StatusCode -eq 200) { Write-Host '   Backend OK (HTTP 200)' } else { Write-Host '   Backend respondeu com status:' $response.StatusCode } } catch { Write-Host '   Backend inacessível' }"
 echo.
-
-echo [TESTE] AI Service /health...
-powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:5001/health' -TimeoutSec 5 -UseBasicParsing; if($response.StatusCode -eq 200) { Write-Host '   AI Service OK (HTTP 200)' } else { Write-Host '   AI Service respondeu com status:' $response.StatusCode } } catch { Write-Host '   AI Service inacessível' }"
-echo.
-
 echo ==========================================
 echo             RESUMO
 echo ==========================================
@@ -66,3 +45,4 @@ echo AI Service:http://localhost:5001/api/ai
 echo Login:     admin@synvia.io / admin123
 echo.
 pause
+exit /b 0

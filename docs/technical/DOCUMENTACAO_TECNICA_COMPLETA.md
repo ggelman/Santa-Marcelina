@@ -131,7 +131,6 @@
 
 ## 9. Referências Complementares
 - [Guia de execução completo](../guides/GUIA_EXECUCAO_COMPLETO.md)
-- [Roadmap estratégico e backlog futuro](../ROADMAP_TRANSFORMACAO_DIGITAL.md)
 - [Documentação de segurança](../security/SECURITY_ALERTS_DOCUMENTATION.md)
 
 > Última revisão: outubro/2025

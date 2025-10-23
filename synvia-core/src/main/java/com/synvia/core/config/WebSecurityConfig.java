@@ -46,6 +46,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/status/**").permitAll()
                         // Endpoints públicos para clientes (LGPD)
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/clientes/publico").permitAll()

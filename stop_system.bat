@@ -1,4 +1,12 @@
-@echo off
+﻿@echo off
+setlocal enabledelayedexpansion
+goto :main
+
+:sleep
+powershell -NoLogo -NoProfile -Command "Start-Sleep -Seconds %~1" >nul
+exit /b 0
+
+:main
 echo.
 echo ==========================================
 echo    PARADA RAPIDA DOS SERVICOS SYNVIA
@@ -10,18 +18,15 @@ set /a stopped=0
 
 for %%p in (3000:Frontend 8080:Backend 5001:AI-Service) do (
     for /f "tokens=1,2 delims=:" %%a in ("%%p") do (
-        echo [STOP] Verificando porta %%a (%%b)...
         for /f "tokens=5" %%c in ('netstat -ano 2^>nul ^| findstr ":%%a"') do (
-            echo   Encerrando PID %%c...
-            taskkill /PID %%c /F >nul 2>&1
+            taskkill /PID %%c /F >nul 2^>^&1
             if !errorlevel!==0 set /a stopped+=1
         )
     )
 )
 
-echo.
-echo [INFO] Aguardando liberacao das portas...
-timeout /t 3 /nobreak >nul
+echo [INFO] Aguardando liberacao completa...
+call :sleep 2
 
 echo.
 echo ==========================================
@@ -30,7 +35,7 @@ echo ==========================================
 
 set /a ports_free=0
 for %%p in (3000 8080 5001) do (
-    netstat -an | findstr ":%%p" >nul 2>&1
+    netstat -an | findstr ":%%p" >nul 2^>^&1
     if !errorlevel! neq 0 (
         echo   Porta %%p livre
         set /a ports_free+=1
@@ -41,11 +46,12 @@ for %%p in (3000 8080 5001) do (
 
 echo.
 if !ports_free!==3 (
-    echo TODOS OS SERVICOS FORAM ENCERRADOS.
+    echo Todos os servicos foram encerrados com sucesso.
 ) else (
-    echo Ainda existem processos ativos. Feche os terminais abertos, se necessário.
+    echo Ainda existem processos ativos. Feche manualmente os terminais, se necessario.
 )
 
 echo.
 echo ==========================================
 pause
+exit /b 0

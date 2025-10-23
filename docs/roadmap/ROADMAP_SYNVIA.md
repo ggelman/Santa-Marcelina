@@ -14,7 +14,6 @@ Após a migração do monólito goDigital para a identidade Synvia, o ambiente l
 
 ## Destaques Recentes
 - Reconfiguração total para **execução em HTTP**: `start_system.bat`, `stop_system.bat`, `system_status.bat` e `test_sistema_seguranca.bat` alinham portas 3000/8080/5001.
-- Eliminação de resíduos legados (`padariaApi/`) e criação de templates `.env.example` para Front e IA.
 - Documentação revisada (Guias rápido e completo, README principal) refletindo o novo fluxo Synvia.
 
 ## Prioridades Atuais (0-4 semanas)
@@ -58,9 +57,5 @@ Após a migração do monólito goDigital para a identidade Synvia, o ambiente l
 | Synvia Intelligence | Atualizar SDKs LLM e criar orquestrador com retries/logs | IA/Data | Clientes `gemini`/`openai` modernos, fallback inteligente |
 | DevSecOps | Pipeline CI/CD integrado (pytest/mvn/npm + lint + relatório) | DevOps | Execução automática em PRs com status visível |
 
-## Links Úteis
-- **Ambiente HTTP**: consulte `README.md` e `docs/guides/INICIO_RAPIDO.md`.
-- **Templates `.env`**: `FrontGoDgital/.env.example` e `ai_module/.env.example`.
-- **Script de status**: `system_status.bat` (verifica 3000/8080/5001).
 
 > Para evoluções de longo prazo (ex.: blockchain, SaaS multi-tenant), registre novas iniciativas nesta página e referencie suas epics no sistema de gestão que a equipe escolher.

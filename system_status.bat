@@ -1,6 +1,12 @@
-@echo off
+﻿@echo off
 setlocal enabledelayedexpansion
+goto :main
 
+:curl_test
+powershell -NoLogo -NoProfile -Command "try {  = Invoke-WebRequest -Uri '%~2' -TimeoutSec 5 -UseBasicParsing; Write-Host '   %~1 OK (HTTP' .StatusCode')' } catch { Write-Host '   %~1 inacessível' }" 2>nul
+exit /b 0
+
+:main
 echo.
 echo ==========================================
 echo    SYNVIA PLATFORM - STATUS EM TEMPO REAL
@@ -8,14 +14,14 @@ echo ==========================================
 echo.
 
 if not exist "ai_module" (
-    echo [ERRO] Execute este script a partir do diretório raiz do projeto.
+    echo [ERRO] Execute este script na raiz do projeto.
     exit /b 1
 )
 
 echo [INFO] Data/Hora: %date% %time%
 echo.
 echo ==========================================
-echo           STATUS DAS PORTAS
+echo           STATUS DAS PORTAS (HTTP)
 echo ==========================================
 
 set /a total_services=0
@@ -39,14 +45,9 @@ echo ==========================================
 echo         TESTES DE CONECTIVIDADE
 echo ==========================================
 
-echo [TEST] Frontend...
-powershell -Command "try { $r = Invoke-WebRequest -Uri 'http://localhost:3000' -TimeoutSec 3 -UseBasicParsing; Write-Host '   Frontend OK (HTTP' $r.StatusCode')' } catch { Write-Host '   Frontend inacessível' }" 2>nul
-
-echo [TEST] Backend...
-powershell -Command "try { $r = Invoke-WebRequest -Uri 'http://localhost:8080/actuator/health' -TimeoutSec 3 -UseBasicParsing; Write-Host '   Backend OK (HTTP' $r.StatusCode')' } catch { Write-Host '   Backend inacessível' }" 2>nul
-
-echo [TEST] AI Service...
-powershell -Command "try { $r = Invoke-WebRequest -Uri 'http://localhost:5001/health' -TimeoutSec 3 -UseBasicParsing; Write-Host '   AI Service OK (HTTP' $r.StatusCode')' } catch { Write-Host '   AI Service inacessível' }" 2>nul
+call :curl_test "Frontend" "http://localhost:3000"
+call :curl_test "Backend /actuator/health" "http://localhost:8080/actuator/health"
+call :curl_test "AI Service /health" "http://localhost:5001/health"
 
 echo.
 echo ==========================================
@@ -57,27 +58,24 @@ set /a percentage=!active_services!*100/!total_services!
 
 if !active_services!==!total_services! (
     echo STATUS: ONLINE (^!percentage!%%^)
-    echo ACAO: Sistema pronto para uso
-    echo ACESSO: http://localhost:3000
-    echo LOGIN: admin@synvia.io / admin123
+    echo ACESSO: http://localhost:3000 (admin@synvia.io / admin123)
 ) else if !active_services! gtr 0 (
     echo STATUS: PARCIAL (^!percentage!%%^)
-    echo ACAO: Verificar serviços inativos
-    echo DICA: Execute start_system.bat
+    echo ACAO: Verifique os serviços listados como INATIVOS.
 ) else (
     echo STATUS: OFFLINE (^!percentage!%%^)
-    echo ACAO: Inicializar sistema
-    echo DICA: Execute start_system.bat
+    echo ACAO: Execute start_system.bat.
 )
 
 echo.
 echo ==========================================
-echo             COMANDOS UTEIS
+echo             COMANDOS ÚTEIS
 echo ==========================================
-echo Iniciar sistema:     start_system.bat
-echo Parar sistema:       stop_system.bat
-echo Teste funcional:     test_sistema_seguranca.bat
-echo Documentacao:        CENTRAL_DOCUMENTACAO.md
-echo Problemas:           SOLUCAO_PROBLEMAS.md
+echo start_system.bat           - Inicia os serviços (HTTP)
+echo stop_system.bat            - Encerra os serviços
+echo test_sistema_seguranca.bat - Smoke tests
+echo docs/README.md             - Índice de documentação
+
 echo.
 pause
+exit /b 0
