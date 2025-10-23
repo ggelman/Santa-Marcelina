@@ -47,9 +47,10 @@ npm install
 ### 3.1 AI Service (Flask)
 ```bash
 cd ai_module
+set USE_HTTPS=false  # Windows PowerShell: $env:USE_HTTPS="false"
 python ai_service.py
 ```
-- Porta padrão: `5443` (HTTPS com certificados incluídos). Para HTTP use `USE_HTTPS=false` e a porta passará a ser `5001`.
+- Porta padrão em modo desenvolvimento: `5001` (HTTP). Para habilitar HTTPS defina `USE_HTTPS=true`, utilize certificados em `ssl_certificates/` e a porta passará a ser `5443`.
 - Endpoints principais: `/predict`, `/health`, `/monitoring`.
 
 ### 3.2 Backend Spring Boot
@@ -57,7 +58,7 @@ python ai_service.py
 cd synvia-core
 mvn spring-boot:run
 ```
-- Porta padrão: `8080` (HTTP) ou `8443` com o perfil HTTPS.
+- Porta padrão: `8080` (HTTP). Habilite `-Dspring.profiles.active=https` apenas quando precisar de TLS local.
 - A URL base da API é `/api`.
 
 ### 3.3 Frontend React
@@ -76,7 +77,7 @@ npm start
 
 ### 4.1 Health-checks essenciais
 ```bash
-curl -k https://localhost:5443/health
+curl http://localhost:5001/health
 curl http://localhost:8080/actuator/health
 curl http://localhost:3000 --head
 ```
@@ -126,4 +127,4 @@ docker compose up -d          # Execução integrada com chaves LLM de sandbox
 - [Documentação técnica consolidada](../technical/DOCUMENTACAO_TECNICA_COMPLETA.md)
 - [Roadmap estratégico e próximos passos](../ROADMAP_TRANSFORMACAO_DIGITAL.md)
 
-> Última revisão: dezembro/2025
+> Última revisão: outubro/2025

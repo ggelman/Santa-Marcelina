@@ -50,42 +50,42 @@ export default function HomePage() {
             <div className="bg-white/90 p-6 rounded-lg shadow-md">
               <div className="text-3xl mb-4">🔒</div>
               <h3 className="text-lg font-semibold text-blue-700 mb-2">Backend</h3>
-              <p className="text-sm text-[var(--synvia-text-secondary)]">Spring Boot com HTTPS</p>
-              <p className="text-xs text-gray-500">Porta 8443</p>
+              <p className="text-sm text-[var(--synvia-text-secondary)]">Spring Boot em HTTP</p>
+              <p className="text-xs text-gray-500">Porta 8080</p>
             </div>
             
             <div className="bg-white/90 p-6 rounded-lg shadow-md">
               <div className="text-3xl mb-4">🤖</div>
               <h3 className="text-lg font-semibold text-purple-700 mb-2">AI Service</h3>
-              <p className="text-sm text-[var(--synvia-text-secondary)]">Python Flask com SSL</p>
-              <p className="text-xs text-gray-500">Porta 5443</p>
+              <p className="text-sm text-[var(--synvia-text-secondary)]">Python Flask em HTTP</p>
+              <p className="text-xs text-gray-500">Porta 5001</p>
             </div>
           </div>
           
           <div className="bg-white/90 p-8 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold text-[var(--synvia-space-cadet)] mb-6">
-              🎉 Implementação HTTPS Completa!
+              🎉 Ambiente HTTP pronto para desenvolvimento
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
               <div>
                 <h3 className="font-semibold text-green-700 mb-3">✅ Componentes Funcionando:</h3>
                 <ul className="text-sm text-[var(--synvia-text-secondary)] space-y-2">
-                  <li>• Frontend Next.js (HTTP - Seguro para corporativo)</li>
-                  <li>• Backend Spring Boot (HTTPS - SSL configurado)</li>
-                  <li>• AI Service Python Flask (HTTPS - Certificados)</li>
-                  <li>• Comunicação segura entre serviços</li>
+                  <li>• Frontend Synvia em HTTP</li>
+                  <li>• Backend Spring Boot em HTTP</li>
+                  <li>• AI Service Python Flask em HTTP</li>
+                  <li>• Comunicação local sem TLS</li>
                   <li>• Scripts de automação criados</li>
                 </ul>
               </div>
               
               <div>
-                <h3 className="font-semibold text-blue-700 mb-3">🔗 URLs de Acesso:</h3>
+                <h3 className="font-semibold text-blue-700 mb-3">🔗 URLs de Acesso (modo HTTP):</h3>
                 <ul className="text-sm text-[var(--synvia-text-secondary)] space-y-2">
                   <li>• Frontend: <code className="bg-gray-100 px-1 rounded">http://localhost:3000</code></li>
-                  <li>• Backend: <code className="bg-gray-100 px-1 rounded">https://localhost:8443/api</code></li>
-                  <li>• AI Service: <code className="bg-gray-100 px-1 rounded">https://localhost:5443/api/ai</code></li>
-                  <li>• Swagger: <code className="bg-gray-100 px-1 rounded">https://localhost:8443/swagger-ui.html</code></li>
+                  <li>• Backend: <code className="bg-gray-100 px-1 rounded">http://localhost:8080/api</code></li>
+                  <li>• AI Service: <code className="bg-gray-100 px-1 rounded">http://localhost:5001/api/ai</code></li>
+                  <li>• Swagger: <code className="bg-gray-100 px-1 rounded">http://localhost:8080/swagger-ui.html</code></li>
                 </ul>
               </div>
             </div>

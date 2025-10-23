@@ -78,4 +78,4 @@
 - Logs de auditoria com hash blockchain e checklist de conformidade LGPD.
 - Guia rápido para equipes executivas com resumo dos indicadores e ROI esperado.
 
-> Última atualização: dezembro/2025 — manter revisão quinzenal durante a execução da fase.
+> Última atualização: outubro/2025 — manter revisão quinzenal durante a execução da fase.

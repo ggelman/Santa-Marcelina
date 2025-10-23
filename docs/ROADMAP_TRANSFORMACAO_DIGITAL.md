@@ -309,4 +309,4 @@ Checklist sugerido para homologação dos módulos:
 
 ---
 
-> Atualizado em: novembro/2025 — Responsável: Equipe goDigital Code
+> Atualizado em: outubro/2025 — Responsável: Equipe goDigital Code

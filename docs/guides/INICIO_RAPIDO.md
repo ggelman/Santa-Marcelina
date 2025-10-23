@@ -31,15 +31,16 @@ Para encerrar todos os serviços use:
 ## 🧭 Execução manual (Linux/macOS/Windows)
 Em três terminais separados, execute os comandos abaixo a partir da raiz do projeto.
 
-### 1. Módulo de IA (porta 5443 HTTPS)
+### 1. Módulo de IA (porta 5001 HTTP)
 ```bash
 cd ai_module
 python -m venv .venv && source .venv/bin/activate  # opcional
-# .venv\\Scripts\\activate  # Windows PowerShell
+# .venv\Scripts\activate  # Windows PowerShell
 pip install -r requirements.txt
-python ai_service.py  # usa certificados de ../ssl_certificates
+export USE_HTTPS=false  # PowerShell: $env:USE_HTTPS="false"
+python ai_service.py
 ```
-> Para executar em HTTP utilize `USE_HTTPS=false python ai_service.py` (porta 5001).
+> Para executar em HTTPS defina `USE_HTTPS=true`, utilize os certificados de `../ssl_certificates` e a porta passará a ser `5443`.
 
 ### 2. Backend Spring Boot (porta 8080)
 ```bash
@@ -59,7 +60,7 @@ npm start
 ## 🔍 Verificações rápidas
 - **Frontend:** `http://localhost:3000` deve exibir a tela de login.
 - **Backend:** `http://localhost:8080/actuator/health` retorna `{"status":"UP"}`.
-- **IA:** `https://localhost:5443/health` retorna `{"status":"ok"}` (aceite o certificado autoassinado). Em HTTP utilize `http://localhost:5001/health`.
+- **IA:** `http://localhost:5001/health` retorna `{"status":"ok"}`. Para HTTPS utilize `https://localhost:5443/health`.
 
 Use `system_status.bat` (Windows) ou `ps`/`lsof -i` (Linux/macOS) para confirmar as portas ativas.
 
@@ -92,4 +93,4 @@ npm run lint && npm test       # Qualidade e testes do frontend
 
 > Tempo médio para o primeiro acesso: **≈ 5 minutos**
 >
-> Última atualização: dezembro/2025
+> Última atualização: outubro/2025

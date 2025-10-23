@@ -51,7 +51,7 @@ Synvia Front (React)  -->  Synvia Core API (Spring Boot)  -->  Synvia Intelligen
    npm start
    ```
 4. Acesse `http://localhost:3000`. Usuário padrão atual: `admin@padaria.com` / `admin123` (será evoluído para credenciais Synvia em sprint dedicada).
-5. Health-checks essenciais: `http://localhost:8080/actuator/health` (Core API) e `https://localhost:5443/api/ai/health` (Intelligence).
+5. Health-checks essenciais: `http://localhost:8080/actuator/health` (Core API) e `http://localhost:5001/api/ai/health` (Intelligence).
 
 > Revisite o [guia rápido](docs/guides/INICIO_RAPIDO.md) e o [guia completo](docs/guides/GUIA_EXECUCAO_COMPLETO.md) para cenários avançados.
 
