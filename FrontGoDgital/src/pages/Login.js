@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+﻿import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import { useAuth } from "../context/AuthContext"
@@ -7,87 +7,138 @@ import { Input } from "../components/Input"
 import { Card } from "../components/Card"
 import { BRAND } from "../config/branding"
 
-const LoginContainer = styled.div`
+const LoginWrapper = styled.div`
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--synvia-background) 0%, var(--synvia-surface-alt) 100%);
-  padding: 20px;
+  padding: 32px 16px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -20% -40%;
+    background: radial-gradient(circle at 0% 0%, rgba(142, 194, 255, 0.3), transparent 45%),
+                radial-gradient(circle at 100% 10%, rgba(91, 181, 162, 0.25), transparent 40%),
+                radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.15), transparent 55%);
+    filter: blur(40px);
+    z-index: -1;
+  }
 `
 
 const LoginCard = styled(Card)`
   width: 100%;
-  max-width: 400px;
-  padding: 40px;
-  text-align: center;
+  max-width: 420px;
+  padding: 48px 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(239, 244, 249, 0.92));
+  box-shadow: 0 24px 60px rgba(20, 31, 65, 0.18);
+  backdrop-filter: blur(12px);
 `
 
-const Logo = styled.div`
-  margin-bottom: 30px;
-  
+const Logo = styled.header`
+  margin-bottom: 32px;
+  text-align: center;
+
+  .symbol {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 18px;
+    border-radius: 24px;
+    background: ${props => props.theme.colors.gradientCard};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 16px 32px rgba(20, 27, 65, 0.18);
+  }
+
   img {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 20px;
+    width: 72px;
+    height: 72px;
     object-fit: contain;
   }
-  
+
   h1 {
-    color: var(--synvia-accent-primary);
-    font-size: 24px;
+    color: var(--synvia-space-cadet);
+    font-size: 26px;
     font-weight: 700;
-    margin-bottom: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
-  
+
   p {
-    color: var(--synvia-text-muted);
+    color: var(--synvia-text-secondary);
     font-size: 14px;
-    font-style: italic;
+    margin-top: 6px;
   }
 `
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
+  text-align: left;
+
+  label {
+    font-size: 13px;
+    color: var(--synvia-text-secondary);
+    font-weight: 500;
+  }
 `
 
 const ErrorMessage = styled.div`
-  color: #dc3545;
+  color: ${props => props.theme.colors.danger};
   font-size: 14px;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
+  margin-top: 12px;
+  padding: 12px;
+  background-color: rgba(218, 92, 92, 0.12);
+  border: 1px solid rgba(218, 92, 92, 0.25);
+  border-radius: 10px;
 `
 
-const CredentialsInfo = styled.div`
-  margin-top: 30px;
-  padding: 20px;
-  background-color: var(--synvia-surface-alt);
-  border-radius: 8px;
-  border-left: 4px solid var(--synvia-accent-primary);
-  
+const SupportBox = styled.div`
+  margin-top: 32px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(52, 127, 196, 0.12), rgba(91, 181, 162, 0.12));
+  border-radius: 18px;
+  border: 1px solid rgba(52, 127, 196, 0.18);
+
   h4 {
-    color: var(--synvia-accent-primary);
-    margin-bottom: 15px;
-    font-size: 16px;
+    color: var(--synvia-space-cadet);
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
   }
-  
+
   div {
-    margin-bottom: 10px;
     font-size: 14px;
-    
+    color: var(--synvia-text-secondary);
+
     strong {
-      color: var(--synvia-text-primary);
+      color: var(--synvia-space-cadet);
     }
-    
+
     span {
       color: var(--synvia-text-muted);
-      font-family: monospace;
+      font-family: ${props => props.theme.typography.mono};
     }
+  }
+`
+
+const PrimaryButton = styled(Button)`
+  background: var(--synvia-accent-primary) !important;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 14px 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(52, 127, 196, 0.25);
   }
 `
 
@@ -136,7 +187,7 @@ export const Login = () => {
       if (resultado.mfaRequired) {
         setMfaStep("challenge")
         setOtp("")
-        setErro("Informe o código de autenticação para continuar.")
+        setErro("Informe o código do autenticador para continuar.")
         return
       }
 
@@ -146,105 +197,113 @@ export const Login = () => {
           setMfaStep("challenge")
         }
       } else {
-        setErro("Email ou senha inválidos")
+        setErro("Credenciais inválidas. Verifique e tente novamente.")
       }
     } catch (error) {
-      setErro("Erro ao fazer login. Tente novamente.")
+      setErro("Erro ao conectar com o Synvia Core. Confirme se o backend está ativo em http://localhost:8080.")
     } finally {
       setCarregando(false)
     }
   }
 
   return (
-    <LoginContainer>
+    <LoginWrapper>
       <LoginCard>
         <Logo>
-          <img
-            src="/assets/synvia-logo.svg"
-            alt="Logo Synvia"
-            onError={(e) => {
-              e.target.onerror = null
-              e.target.src = "/images/logoSynvia-Photoroom.png"
-            }}
-          />
-          <div
-            style={{
-              width: "100px",
-              height: "100px",
-              backgroundColor: "var(--synvia-accent-primary)",
-              borderRadius: "50%",
-              margin: "0 auto 20px",
-              display: "none",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "40px",
-              color: "var(--synvia-snow)",
-            }}
-          >
-            S
+          <div className="symbol">
+            <img
+              src="/assets/synvia-logo.svg"
+              alt="Logo Synvia"
+              onError={(e) => {
+                e.target.onerror = null
+                e.target.src = "/images/logoSynvia-Photoroom.png"
+              }}
+            />
           </div>
-          <h1>Synvia Platform</h1>
-          <p>Ecossistema modular de dados e operações</p>
+          <h1>{BRAND.name}</h1>
+          <p>{BRAND.tagline}</p>
         </Logo>
 
         <Form onSubmit={handleSubmit}>
-          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-
-          <Input
-            type="password"
-            placeholder="Senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-          />
-
-          {mfaStep !== "password" && (
+          <div>
+            <label htmlFor="login-email">E-mail corporativo</label>
             <Input
-              type="text"
-              placeholder="Código do autenticador"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={6}
+              id="login-email"
+              type="email"
+              placeholder="ex.: admin@synvia.io"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
+          </div>
+
+          <div>
+            <label htmlFor="login-password">Senha</label>
+            <Input
+              id="login-password"
+              type="password"
+              placeholder="Digite sua senha"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+            />
+          </div>
+
+          {mfaStep !== "password" && (
+            <div>
+              <label htmlFor="login-mfa">Código do autenticador</label>
+              <Input
+                id="login-mfa"
+                type="text"
+                placeholder="000 000"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                required
+              />
+            </div>
           )}
 
-          <Button type="submit" disabled={carregando} style={{ backgroundColor: "var(--synvia-accent-primary)" }}>
+          <PrimaryButton type="submit" disabled={carregando}>
             {carregando ? "Validando..." : mfaStep === "password" ? "Entrar" : "Confirmar"}
-          </Button>
+          </PrimaryButton>
         </Form>
 
         {erro && <ErrorMessage>{erro}</ErrorMessage>}
 
         {mfaStep === "setup" && (
-          <div style={{ marginTop: "20px" }}>
-            <h4 style={{ color: "var(--synvia-accent-primary)", marginBottom: "10px" }}>Ative o Autenticador</h4>
-            <p style={{ fontSize: "14px", color: "var(--synvia-text-secondary)", marginBottom: "10px" }}>
-              Escaneie o QR Code abaixo no aplicativo de autenticação ou insira o código manualmente.
+          <SupportBox style={{ marginTop: 24 }}>
+            <h4>Configuração MFA necessária</h4>
+            <p style={{ fontSize: "14px", marginBottom: "12px" }}>
+              Escaneie o QR Code no seu aplicativo de autenticação ou insira o código manual para habilitar a dupla autenticação.
             </p>
             {qrCodeUrl && (
               <img
                 src={qrCodeUrl}
                 alt="QR Code MFA"
-                style={{ margin: "10px auto", display: "block", border: "1px solid #eee", borderRadius: "8px", padding: "8px", background: "white" }}
+                style={{ margin: "10px auto", display: "block", border: "1px solid #e5ebf5", borderRadius: "12px", padding: "10px", background: "white" }}
               />
             )}
-            <p style={{ fontFamily: "monospace", fontSize: "16px", letterSpacing: "2px", color: "var(--synvia-text-primary)" }}>{mfaSecret}</p>
-            <p style={{ fontSize: "13px", color: "var(--synvia-text-muted)" }}>Após cadastrar, informe o código de 6 dígitos no campo acima.</p>
-          </div>
+            <p style={{ fontFamily: synviaTheme.typography.mono, fontSize: "16px", letterSpacing: "2px", color: "var(--synvia-text-primary)" }}>{mfaSecret}</p>
+            <p style={{ fontSize: "13px", color: "var(--synvia-text-muted)", marginTop: "8px" }}>
+              Após cadastrar, informe o código de 6 dígitos acima para finalizar o acesso.
+            </p>
+          </SupportBox>
         )}
 
-        <CredentialsInfo>
-          <h4>🔐 Credenciais para demonstração</h4>
+        <SupportBox>
+          <h4>Credenciais para demonstração</h4>
           <div>
-            <strong>Admin:</strong> <span>admin@synvia.io</span> / <span>admin123</span>
+            <strong>Administrador:</strong> <span>admin@synvia.io</span> / <span>admin123</span>
             <br />
-            <small style={{ color: "var(--synvia-text-muted)" }}>Será solicitado um código MFA após o login.</small>
+            <small style={{ color: "var(--synvia-text-muted)" }}>MFA será solicitado após o primeiro login.</small>
           </div>
-        </CredentialsInfo>
+        </SupportBox>
       </LoginCard>
-    </LoginContainer>
+    </LoginWrapper>
   )
 }
+
+

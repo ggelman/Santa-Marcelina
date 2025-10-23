@@ -1,30 +1,31 @@
-import { createGlobalStyle, ThemeProvider } from "styled-components"
+﻿import { createGlobalStyle, ThemeProvider } from "styled-components"
 import PropTypes from "prop-types"
 
 import { synviaTheme } from "./theme"
 
 export const GlobalStyles = createGlobalStyle`
   :root {
+    --synvia-midnight: ${synviaTheme.colors.midnight};
     --synvia-space-cadet: ${synviaTheme.colors.spaceCadet};
-    --synvia-snow: ${synviaTheme.colors.snow};
+    --synvia-deep-indigo: ${synviaTheme.colors.deepIndigo};
     --synvia-steel-blue: ${synviaTheme.colors.steelBlue};
-    --synvia-asparagus: ${synviaTheme.colors.asparagus};
-    --synvia-smoky-black: ${synviaTheme.colors.smokyBlack};
-    --synvia-graphite: ${synviaTheme.colors.graphiteGray};
-    --synvia-background: ${synviaTheme.colors.background};
+    --synvia-ice-blue: ${synviaTheme.colors.iceBlue};
+    --synvia-snow: ${synviaTheme.colors.snow};
     --synvia-surface: ${synviaTheme.colors.surface};
     --synvia-surface-alt: ${synviaTheme.colors.surfaceAlt};
+    --synvia-border: ${synviaTheme.colors.border};
     --synvia-text-primary: ${synviaTheme.colors.textPrimary};
     --synvia-text-secondary: ${synviaTheme.colors.textSecondary};
     --synvia-text-muted: ${synviaTheme.colors.textMuted};
     --synvia-accent-primary: ${synviaTheme.colors.accentPrimary};
     --synvia-accent-secondary: ${synviaTheme.colors.accentSecondary};
-    --synvia-border: ${synviaTheme.colors.border};
-    --synvia-shadow-soft: ${synviaTheme.colors.shadowSoft};
+    --synvia-accent-highlight: ${synviaTheme.colors.accentHighlight};
     --synvia-focus-ring: ${synviaTheme.colors.focusRing};
+    --synvia-gradient-bg: ${synviaTheme.colors.gradientBackground};
+    --synvia-gradient-card: ${synviaTheme.colors.gradientCard};
   }
 
-  * {
+  *, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -34,10 +35,27 @@ export const GlobalStyles = createGlobalStyle`
     font-family: ${synviaTheme.typography.primary};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: var(--synvia-background);
+    background: var(--synvia-gradient-bg);
     color: var(--synvia-text-primary);
     line-height: 1.6;
-    overflow-y: scroll;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 20% 20%, rgba(142, 194, 255, 0.15), transparent 45%),
+                radial-gradient(circle at 80% 0%, rgba(91, 181, 162, 0.18), transparent 40%),
+                radial-gradient(circle at 50% 75%, rgba(20, 21, 38, 0.25), transparent 55%);
+    z-index: -1;
+  }
+
+  ::selection {
+    background: rgba(52, 127, 196, 0.25);
+    color: var(--synvia-text-primary);
   }
 
   button {
@@ -64,73 +82,24 @@ export const GlobalStyles = createGlobalStyle`
     height: auto;
   }
 
-  @keyframes slide-in {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slide-out {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-  }
-
-  .animate-slide-in {
-    animation: slide-in 0.3s ease-out;
-  }
-
-  .animate-slide-out {
-    animation: slide-out 0.3s ease-in;
+  h1, h2, h3, h4, h5 {
+    font-family: ${synviaTheme.typography.secondary};
+    color: var(--synvia-text-primary);
   }
 
   .security-alert-critical {
-    border-left: 4px solid #ef4444;
+    border-left: 4px solid ${synviaTheme.colors.danger};
+    background: rgba(218, 92, 92, 0.08);
   }
 
   .security-alert-warning {
-    border-left: 4px solid #f59e0b;
+    border-left: 4px solid ${synviaTheme.colors.warning};
+    background: rgba(244, 183, 64, 0.08);
   }
 
   .security-alert-info {
     border-left: 4px solid var(--synvia-accent-primary);
-  }
-
-  .status-indicator {
-    position: relative;
-  }
-
-  .status-indicator::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: currentColor;
-  }
-
-  .status-healthy::before {
-    background-color: var(--synvia-accent-secondary);
-  }
-
-  .status-warning::before {
-    background-color: #f59e0b;
-  }
-
-  .status-critical::before {
-    background-color: #ef4444;
+    background: rgba(52, 127, 196, 0.08);
   }
 `
 

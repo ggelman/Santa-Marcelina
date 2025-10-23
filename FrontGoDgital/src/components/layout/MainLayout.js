@@ -1,4 +1,4 @@
-import styled from "styled-components"
+﻿import styled from "styled-components"
 import { BRAND } from "../../config/branding"
 import { useAuth } from "../../context/AuthContext"
 import { usePermissions } from "../../hooks/usePermissions"
@@ -10,80 +10,125 @@ import PropTypes from "prop-types"
 const LayoutContainer = styled.div`
   display: flex;
   min-height: 100vh;
+  background: var(--synvia-gradient-bg);
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 10% 20%, rgba(142, 194, 255, 0.25), transparent 45%),
+                radial-gradient(circle at 90% 10%, rgba(91, 181, 162, 0.2), transparent 40%);
+    filter: blur(80px);
+    z-index: 0;
+  }
 `
 
 const Sidebar = styled.aside`
+  position: relative;
+  z-index: 1;
   width: 280px;
   min-width: 280px;
-  background-color: ${(props) => props.theme.colors.white};
-  box-shadow: 2px 0 4px rgba(0,0,0,0.05);
-  padding: 20px 0;
+  background: linear-gradient(160deg, rgba(15, 21, 38, 0.92), rgba(28, 44, 82, 0.88));
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 24px 0 32px;
+  box-shadow: 0 18px 40px rgba(7, 13, 32, 0.35);
+  backdrop-filter: blur(8px);
 `
 
 const Logo = styled.div`
-  padding: 0 20px 30px;
+  padding: 0 24px 32px;
   text-align: center;
-  border-bottom: 1px solid ${(props) => props.theme.colors.border};
-  margin-bottom: 30px;
-  
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 28px;
+
+  .symbol {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   img {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 15px;
+    width: 60px;
+    height: 60px;
     object-fit: contain;
   }
-  
+
   h3 {
-    color: var(--synvia-accent-primary);
+    color: #f6f7fc;
     font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
   }
   
   p {
-    color: ${(props) => props.theme.colors.textPrimary};
+    color: rgba(255, 255, 255, 0.65);
     font-size: 12px;
-    margin-top: 5px;
-    font-style: italic;
+    margin-top: 4px;
   }
 `
 
 const NavMenu = styled.nav`
-  padding: 0 20px;
+  padding: 0 16px;
+  display: grid;
+  gap: 6px;
 `
 
 const NavItem = styled.div`
-  margin-bottom: 8px;
-  
   a {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     padding: 12px 16px;
-    color: ${(props) => props.theme.colors.textPrimary};
+    color: rgba(255, 255, 255, 0.72);
     text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    border-radius: 12px;
     font-weight: 500;
+    background: rgba(255, 255, 255, 0.02);
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
     
     &:hover, &.active {
-      background-color: var(--synvia-accent-primary);
-      color: white;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 24px rgba(8, 12, 28, 0.24);
     }
   }
 `
 
 const MainContent = styled.main`
+  position: relative;
+  z-index: 1;
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(239, 243, 251, 0.92));
+  backdrop-filter: blur(6px);
 `
 
 const Header = styled.header`
-  background-color: ${(props) => props.theme.colors.white};
-  padding: 16px 24px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 20px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid rgba(20, 27, 65, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
 `
 
 const UserInfo = styled.div`
@@ -93,36 +138,38 @@ const UserInfo = styled.div`
   
   span {
     font-weight: 600;
-    color: ${(props) => props.theme.colors.textPrimary};
+    color: var(--synvia-text-secondary);
   }
 `
 
 const UserProfile = styled.span`
-  background-color: var(--synvia-accent-primary);
+  background: var(--synvia-gradient-accent);
   color: white;
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 9999px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 `
 
 const LogoutButton = styled.button`
-  background: none;
-  color: ${(props) => props.theme.colors.danger};
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
+  background: rgba(218, 92, 92, 0.12);
+  color: ${props => props.theme.colors.danger};
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
   
   &:hover {
-    background-color: rgba(220, 53, 69, 0.1);
+    background: rgba(218, 92, 92, 0.18);
+    transform: translateY(-1px);
   }
 `
 
 const ContentArea = styled.div`
   flex: 1;
-  padding: 24px;
+  padding: 32px;
   overflow-y: auto;
 `
 
@@ -133,7 +180,7 @@ export const MainLayout = ({ children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Contar alertas não lidos
+  // Contar alertas nÃ£o lidos
   const unreadAlertsCount = alerts.filter(alert => !alert.read).length
 
   const handleLogout = () => {
@@ -142,34 +189,34 @@ export const MainLayout = ({ children }) => {
   }
 
   const allMenuItems = [
-    { path: "/", label: "Dashboard", icon: "🏠", permission: null },
-    { path: "/financeiro", label: "Dashboard Financeiro", icon: "💰", permission: "relatorios" },
-    { path: "/auditoria", label: "Dashboard Auditoria", icon: "🔍", permission: "auditoria" },
-    { path: "/vendas/nova", label: "Nova Venda", icon: "🛒", permission: "vendas" },
-    { path: "/vendas/historico", label: "Histórico de Vendas", icon: "📋", permission: "vendas" },
-    { path: "/produtos/novo", label: "Cadastrar Produto", icon: "📦", permission: "produtos" },
-    { path: "/produtos/categorias", label: "Categorias", icon: "🏷️", permission: "produtos" },
-    { path: "/clientes/novo", label: "Cadastrar Cliente", icon: "👥", permission: "clientes" },
-    { path: "/clientes", label: "Gestão de Clientes", icon: "⭐", permission: "clientes" },
-    { path: "/estoque", label: "Gestão de Estoque", icon: "📊", permission: "estoque" },
-    { path: "/usuarios", label: "Usuários", icon: "👤", permission: "usuarios" },
-    { path: "/backup", label: "Sistema de Backup", icon: "💾", permission: "backup" },
-    { path: "/relatorios", label: "Relatórios", icon: "📈", permission: "relatorios" },
+    { path: "/", label: "Dashboard", icon: "ðŸ ", permission: null },
+    { path: "/financeiro", label: "Dashboard Financeiro", icon: "ðŸ’°", permission: "relatorios" },
+    { path: "/auditoria", label: "Dashboard Auditoria", icon: "ðŸ”", permission: "auditoria" },
+    { path: "/vendas/nova", label: "Nova Venda", icon: "ðŸ›’", permission: "vendas" },
+    { path: "/vendas/historico", label: "HistÃ³rico de Vendas", icon: "ðŸ“‹", permission: "vendas" },
+    { path: "/produtos/novo", label: "Cadastrar Produto", icon: "ðŸ“¦", permission: "produtos" },
+    { path: "/produtos/categorias", label: "Categorias", icon: "ðŸ·ï¸", permission: "produtos" },
+    { path: "/clientes/novo", label: "Cadastrar Cliente", icon: "ðŸ‘¥", permission: "clientes" },
+    { path: "/clientes", label: "GestÃ£o de Clientes", icon: "â­", permission: "clientes" },
+    { path: "/estoque", label: "GestÃ£o de Estoque", icon: "ðŸ“Š", permission: "estoque" },
+    { path: "/usuarios", label: "UsuÃ¡rios", icon: "ðŸ‘¤", permission: "usuarios" },
+    { path: "/backup", label: "Sistema de Backup", icon: "ðŸ’¾", permission: "backup" },
+    { path: "/relatorios", label: "RelatÃ³rios", icon: "ðŸ“ˆ", permission: "relatorios" },
     {
       path: "/security",
-      label: "Monitor de Segurança",
-      icon: "🔒",
+      label: "Monitor de SeguranÃ§a",
+      icon: "ðŸ”’",
       permission: "administrador",
       badge: unreadAlertsCount > 0 ? unreadAlertsCount : 0
     },
-    { path: "/ia/previsao", label: "Previsão IA", icon: "🤖", permission: "administrador" },
-    { path: "/ia/chat", label: "Chat com IA", icon: "💬", permission: "administrador" },
+    { path: "/ia/previsao", label: "PrevisÃ£o IA", icon: "ðŸ¤–", permission: "administrador" },
+    { path: "/ia/chat", label: "Chat com IA", icon: "ðŸ’¬", permission: "administrador" },
   ]
 
   const menuItems = allMenuItems.filter((item) => {
     if (!item.permission) return true
     
-    // Para itens específicos de admin, verificar se é administrador
+    // Para itens especÃ­ficos de admin, verificar se Ã© administrador
     if (item.permission === "administrador") {
       return userProfile === "administrador"
     }
@@ -190,9 +237,9 @@ export const MainLayout = ({ children }) => {
       case "gerente":
         return "Gerente"
       case "funcionario":
-        return "Funcionário"
+        return "FuncionÃ¡rio"
       default:
-        return "Usuário"
+        return "UsuÃ¡rio"
     }
   }
 
@@ -265,17 +312,17 @@ export const MainLayout = ({ children }) => {
 
       <MainContent>
         <Header>
-          <h1 style={{ color: "#3D2C21", fontSize: "20px" }}>Sistema de Gestão</h1>
+          <h1 style={{ color: "#3D2C21", fontSize: "20px" }}>Sistema de GestÃ£o</h1>
           <UserInfo>
             <UserProfile>{getProfileDisplayName(userProfile)}</UserProfile>
-            <span>Olá, {user?.nome}</span>
+            <span>OlÃ¡, {user?.nome}</span>
             <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
           </UserInfo>
         </Header>
 
         <ContentArea>{children}</ContentArea>
         
-        {/* Botão de acesso rápido ao portal do cliente */}
+        {/* BotÃ£o de acesso rÃ¡pido ao portal do cliente */}
         <QuickAccessPortal />
       </MainContent>
     </LayoutContainer>
@@ -285,3 +332,4 @@ export const MainLayout = ({ children }) => {
 MainLayout.propTypes = {
   children: PropTypes.node,
 }
+
