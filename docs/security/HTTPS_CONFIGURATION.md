@@ -144,7 +144,7 @@ python ai_service.py
 start_backend_https.bat
 
 # Opção 2: Manual
-cd padariaApi
+cd synvia-core
 mvn spring-boot:run -Dspring.profiles.active=https
 ```
 

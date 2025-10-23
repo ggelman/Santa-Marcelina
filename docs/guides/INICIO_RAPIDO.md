@@ -43,7 +43,7 @@ python ai_service.py  # usa certificados de ../ssl_certificates
 
 ### 2. Backend Spring Boot (porta 8080)
 ```bash
-cd padariaApi
+cd synvia-core
 mvn spring-boot:run
 ```
 

@@ -52,7 +52,7 @@ npm run start:https
 
 ### **3. Backend (precisa iniciar ❌)**
 ```batch
-cd padariaApi
+cd synvia-core
 mvn spring-boot:run -Dspring.profiles.active=https
 ```
 

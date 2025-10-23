@@ -66,7 +66,7 @@ A aplicação segue uma arquitetura moderna e desacoplada, com um backend robust
 git clone [URL_DO_SEU_REPOSITORIO]
 
 # Navegue até a pasta do backend
-cd ./padariaApi
+cd ./synvia-core
 
 # Configure o application.properties
 # Abra src/main/resources/application.properties e ajuste as credenciais do seu banco de dados MySQL:

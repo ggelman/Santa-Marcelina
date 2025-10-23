@@ -6,7 +6,7 @@
 ## 1. Arquitetura Geral
 ```
 ┌─────────────────────────┐        ┌──────────────────────┐
-│ FrontGoDgital (React)   │ <────> │ padariaApi (Spring)  │ <──┐
+│ FrontGoDgital (React)   │ <────> │ synvia-core (Spring)  │ <──┐
 │ Porta 3000              │        │ Porta 8080 / 8443    │    │
 └─────────────────────────┘        └──────────────────────┘    │
             ▲                                 ▲                │
@@ -37,7 +37,7 @@
 - **Build:** `react-scripts` (Webpack 5). O build gera artefatos em `build/`.
 - **Próximos ajustes (0-3 meses):** centralizar requisições no `api.js` parametrizado via variáveis seguras, modularizar páginas extensas com hooks/componentes reutilizáveis, instrumentar telemetria (Web Vitals + OpenTelemetry) e embarcar widget Gemini para insights rápidos.
 
-### 2.2 padariaApi (Spring Boot)
+### 2.2 synvia-core (Spring Boot)
 - **Stack:** Java 17, Spring Boot 3.5.x, Spring Data JPA, Spring Security, JWT, Maven.
 - **Configuração padrão:** `application.properties` (HTTP em `8080`).
 - **Perfil HTTPS:** `application-https.properties` (porta `8443`, keystore em `ssl_certificates/keystore.p12`).

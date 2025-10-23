@@ -26,7 +26,7 @@ if %errorlevel%==0 (
     echo   ✅ Backend ATIVO em https://localhost:8443
 ) else (
     echo   ❌ Backend NAO ENCONTRADO
-    echo   💡 Execute: cd padariaApi ^&^& mvn spring-boot:run "-Dspring.profiles.active=https"
+    echo   💡 Execute: cd synvia-core ^&^& mvn spring-boot:run "-Dspring.profiles.active=https"
 )
 echo.
 

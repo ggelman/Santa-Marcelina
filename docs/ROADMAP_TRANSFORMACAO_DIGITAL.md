@@ -11,7 +11,7 @@ Com a maturidade em LGPD e Governança de TI atingida, o foco agora é posiciona
 | Módulo | Situação | Destaques atuais | Próximos ajustes |
 | --- | --- | --- | --- |
 | FrontGoDgital (React) | 85% — operacional | Dashboard de auditoria, Portal de Direitos, módulos administrativos. | Modularizar páginas extensas via hooks/componentes, centralizar requisições no `api.js` com variáveis seguras e habilitar telemetria (Web Vitals + OpenTelemetry). |
-| padariaApi (Spring Boot) | 85% — operacional | APIs LGPD, autenticação JWT, integração IA. | Criar microserviço `llm-gateway` com mTLS e fila de prompts, ativar MFA/WebAuthn e rotação de refresh tokens, além de cache/ETag em endpoints públicos. |
+| synvia-core (Spring Boot) | 85% — operacional | APIs LGPD, autenticação JWT, integração IA. | Criar microserviço `llm-gateway` com mTLS e fila de prompts, ativar MFA/WebAuthn e rotação de refresh tokens, além de cache/ETag em endpoints públicos. |
 | ai_module (Flask/ML) | 80% — operacional | Previsões de demanda, monitoramento estruturado, cache Redis. | Atualizar SDKs (OpenAI/Gemini), construir orquestrador multi-provedor, enriquecer contexto com dados multivariados e versionar pipelines com MLflow/DVC. |
 | Infraestrutura & DevSecOps | 70% — parcial | Certificados SSL, scripts de orquestração, logging básico. | Adotar IaC (Terraform/Ansible), unificar CI/CD com testes + scans, centralizar segredos (Vault/Secrets Manager) e amarrar auditoria blockchain à conformidade. |
 
@@ -285,13 +285,13 @@ contract LGPDAuditRegistry {
 | Módulo | Status de verificação | Achados | Ações recomendadas |
 | --- | --- | --- | --- |
 | `ai_module` | Revisão manual do serviço Flask e endpoints críticos (`/predict`, `/retrain`). | Código de retreinamento tinha bloco inacessível (indentação), impedindo `POST /api/ai/retrain`; ajustado no commit atual. Compatibilidade do `openai.ChatCompletion` com SDK >=1.0 continua pendente. | Criar teste de integração cobrindo retreinamento, atualizar SDK para nova interface (`OpenAI` client) e validar fallback Gemini. |
-| `padariaApi` | Revisão de segurança e controllers. | Falta telemetria e auditoria detalhada de chamadas para IA; endpoints públicos sem caching. | Cobrir com testes `mvn test`, habilitar logs estruturados e aplicar cache/ETag nos endpoints públicos. |
+| `synvia-core` | Revisão de segurança e controllers. | Falta telemetria e auditoria detalhada de chamadas para IA; endpoints públicos sem caching. | Cobrir com testes `mvn test`, habilitar logs estruturados e aplicar cache/ETag nos endpoints públicos. |
 | `FrontGoDgital` | Inspeção dos serviços e páginas principais. | Mixed content: `CardapioDigital` chama `http://localhost:8080` via `fetch`, quebrando quando servido em HTTPS; interceptors não tratam expiração simultânea de access/refresh token. | Migrar para `api.js`, usar HTTPS/variáveis ambiente e adicionar retry inteligente no interceptor. |
 | Plataforma | Scripts `start_system.bat`/`system_status.bat` revisados. | Não há automação Linux/macOS; monitoramento distribuído depende de execução manual. | Adicionar scripts cross-platform (Makefile, docker-compose) e health-checks automatizados no CI. |
 
 Checklist sugerido para homologação dos módulos:
 1. `pytest -q` em `ai_module` após atualizar modelos.
-2. `mvn clean verify` em `padariaApi` com banco em memória.
+2. `mvn clean verify` em `synvia-core` com banco em memória.
 3. `npm run lint && npm test` no frontend usando `.env` com URL HTTPS.
 4. Execução integrada via `docker-compose` validando chamadas LLM (Gemini/OpenAI) com chaves de sandbox.
 

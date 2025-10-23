@@ -54,7 +54,7 @@ python ai_service.py
 
 ### 3.2 Backend Spring Boot
 ```bash
-cd padariaApi
+cd synvia-core
 mvn spring-boot:run
 ```
 - Porta padrão: `8080` (HTTP) ou `8443` com o perfil HTTPS.
@@ -104,8 +104,8 @@ curl http://localhost:3000 --head
 
 | Cenário | Diagnóstico | Ação |
 | --- | --- | --- |
-| Backend não sobe | Verifique logs em `padariaApi/target/spring.log` | Confirme versão do Java e credenciais de banco. |
-| Erros CORS | Confira `FrontGoDgital/src/services/api.js` e `padariaApi` -> `WebSecurityConfig` | Alinhe as origens permitidas. |
+| Backend não sobe | Verifique logs em `synvia-core/target/spring.log` | Confirme versão do Java e credenciais de banco. |
+| Erros CORS | Confira `FrontGoDgital/src/services/api.js` e `synvia-core` -> `WebSecurityConfig` | Alinhe as origens permitidas. |
 | IA sem cache | Confirme disponibilidade do Redis (opcional) ou utilize modo fallback | Ajuste `REDIS_URL` ou desabilite temporariamente. |
 | HTTPS falha | Certifique-se de que `keystore.p12` está acessível e senha correta | Regere certificados com `generate_ssl_certs.sh` se necessário. |
 

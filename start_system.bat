@@ -36,7 +36,7 @@ start "🤖 AI Service" cmd /k "cd /d %~dp0ai_module && echo [AI] Iniciando... &
 timeout /t 5 /nobreak >nul
 
 echo [2/3] ⚙️ Backend (Spring) - Porta 8443...
-start "⚙️ Backend API" cmd /k "cd /d %~dp0padariaApi && echo [API] Iniciando... && mvn spring-boot:run \"-Dspring.profiles.active=https\""
+start "⚙️ Backend API" cmd /k "cd /d %~dp0synvia-core && echo [API] Iniciando... && mvn spring-boot:run \"-Dspring.profiles.active=https\""
 timeout /t 10 /nobreak >nul
 
 echo [3/3] 🌐 Frontend (React) - Porta 3000...
